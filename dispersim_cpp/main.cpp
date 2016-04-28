@@ -17,7 +17,7 @@ int main(int argc, const char * argv[]) {
     
     // Initialize Landscape
     
-    Landscape landscape = {50,50, 100};
+    Landscape landscape = {50,50, 1000};
     
     std::cout << landscape.height << "\n";
   
@@ -28,11 +28,12 @@ int main(int argc, const char * argv[]) {
     
     landscape.initSpecies();
     
-    std::cout << "Adding adding species.. " << landscape.getSpecies(0, 0) << "\n";
-    
-
+    std::cout << "After adding species.. " << landscape.getSpecies(0, 0) << "\n";
     
     // Playground
+
+    landscape.calcSpeciesRichness();
+    
     
     
     return 0;

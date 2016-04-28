@@ -29,6 +29,8 @@ public:
     // Find species given x,y coords
     int getSpecies(int x, int y);
     
+    int calcSpeciesRichness();
+    
 };
 
 
