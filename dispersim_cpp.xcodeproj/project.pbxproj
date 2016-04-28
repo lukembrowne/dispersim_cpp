@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2F1AA31A1CD29194005DA265 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F1AA3191CD29194005DA265 /* main.cpp */; };
+		2F1AA3271CD2A37C005DA265 /* landscape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F1AA3261CD2A37C005DA265 /* landscape.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		2F1AA3161CD29194005DA265 /* dispersim_cpp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dispersim_cpp; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F1AA3191CD29194005DA265 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		2F1AA3231CD2A232005DA265 /* landscape.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = landscape.hpp; sourceTree = "<group>"; };
+		2F1AA3261CD2A37C005DA265 /* landscape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = landscape.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				2F1AA3191CD29194005DA265 /* main.cpp */,
+				2F1AA3231CD2A232005DA265 /* landscape.hpp */,
+				2F1AA3261CD2A37C005DA265 /* landscape.cpp */,
 			);
 			path = dispersim_cpp;
 			sourceTree = "<group>";
@@ -118,6 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F1AA3271CD2A37C005DA265 /* landscape.cpp in Sources */,
 				2F1AA31A1CD29194005DA265 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -237,6 +243,7 @@
 				2F1AA31F1CD29194005DA265 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
