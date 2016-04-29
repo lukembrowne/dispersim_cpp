@@ -23,8 +23,8 @@ int main(int argc, const char * argv[]) {
 // PARAMETERS
     
     // Number of generations
-    int steps = 1000;
-    float mortality_rate = 0.1; // Proportion of landscape dieing per step
+    int steps = 1000; // Each step = 5-10 years with 0.10 % mortality rate
+    float mortality_rate = 0.1; // Proportion of landscape dying per step
     
     // Species parameters
     int n_sp_init = 100;
@@ -34,19 +34,34 @@ int main(int argc, const char * argv[]) {
     
     
     // Landscape parameters
-    int width  = 100;
-    int height = 100;
+    int width  = 1000;
+    int height = 1000;
     int area = width * height;
     
-    int dispersal_mode = 1; // 1 == global; 0 == local
+    int dispersal_mode = 0; // 1 == global; 0 == local
     
     int n_dead_per_step = mortality_rate * area;
     int empty_cell_indices[n_dead_per_step];
+    
+    
+    // Lagniappe parameters
+    
+    int print_every_n_steps = 50;
+    
+    
 
   
 ////////////////////////
 ////////////////////////
 // Initialize simulation
+    
+    
+    std::cout << "| ---------------------------- | \n";
+    std::cout << "Steps: " << steps << " or ~ " << steps * 5 << " years \n";
+    std::cout << "Area: " << (width * 5 * height * 5)/10000 << " ha \n";
+
+    
+    
     
     // Random number generators
     // Good info on generating random numbers in C++
@@ -63,7 +78,7 @@ int main(int argc, const char * argv[]) {
     // Add species to landcape
     std::uniform_int_distribution<int> species_rng(0, n_sp_init - 1); // Init RNG
     
-    std::cout << "Initialize species vector with " << area << " inds \n";
+    std::cout << "Individuals: " << area << " \n";
     std::vector<int> sp(area); // Init vector that will hold species
     
     for (auto& iter : sp){
@@ -98,7 +113,9 @@ int main(int argc, const char * argv[]) {
     
 // Begin simulation
     
+    std::cout << "\n\n";
     
+  
     for (int step = 1; step <= steps; step++){
         
         
@@ -173,7 +190,7 @@ int main(int argc, const char * argv[]) {
             
         } // End local dispersal if
 
-        if(step % 50 == 0 ){
+        if(step % print_every_n_steps == 0 | step == 1 ){
             std::cout << "Step:" << step << " | " << calcSpeciesRichness(sp) ;
         }
                        
