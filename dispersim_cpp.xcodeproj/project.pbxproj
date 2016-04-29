@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2F1AA31A1CD29194005DA265 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F1AA3191CD29194005DA265 /* main.cpp */; };
-		2F1AA3271CD2A37C005DA265 /* landscape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F1AA3261CD2A37C005DA265 /* landscape.cpp */; };
+		2F3A05651CD3A81B00B6E86D /* spatial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F3A05631CD3A81B00B6E86D /* spatial.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,8 +26,8 @@
 /* Begin PBXFileReference section */
 		2F1AA3161CD29194005DA265 /* dispersim_cpp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dispersim_cpp; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F1AA3191CD29194005DA265 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		2F1AA3231CD2A232005DA265 /* landscape.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = landscape.hpp; sourceTree = "<group>"; };
-		2F1AA3261CD2A37C005DA265 /* landscape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = landscape.cpp; sourceTree = "<group>"; };
+		2F3A05631CD3A81B00B6E86D /* spatial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spatial.cpp; sourceTree = "<group>"; };
+		2F3A05641CD3A81B00B6E86D /* spatial.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spatial.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,9 +60,9 @@
 		2F1AA3181CD29194005DA265 /* dispersim_cpp */ = {
 			isa = PBXGroup;
 			children = (
+				2F3A05631CD3A81B00B6E86D /* spatial.cpp */,
+				2F3A05641CD3A81B00B6E86D /* spatial.hpp */,
 				2F1AA3191CD29194005DA265 /* main.cpp */,
-				2F1AA3231CD2A232005DA265 /* landscape.hpp */,
-				2F1AA3261CD2A37C005DA265 /* landscape.cpp */,
 			);
 			path = dispersim_cpp;
 			sourceTree = "<group>";
@@ -123,7 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F1AA3271CD2A37C005DA265 /* landscape.cpp in Sources */,
+				2F3A05651CD3A81B00B6E86D /* spatial.cpp in Sources */,
 				2F1AA31A1CD29194005DA265 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -213,6 +213,8 @@
 		2F1AA31E1CD29194005DA265 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/include;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -220,6 +222,8 @@
 		2F1AA31F1CD29194005DA265 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/include;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
