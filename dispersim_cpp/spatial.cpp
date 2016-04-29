@@ -11,7 +11,7 @@
 #include <assert.h>
 
 // Find 8 nearest neighbors of a cell
-void findNN(int focal_cell, int height, int width, int area){
+std::vector<int> findNN(int focal_cell, int height, int width, int area){
     
     std::vector<int> NN(8);
     
@@ -97,9 +97,11 @@ void findNN(int focal_cell, int height, int width, int area){
         NN[5] = width - 1; // SW
     }
     
+    return NN;
     
 //    // Print 8 NN
 //    for(auto& iter : NN){
 //        std::cout << iter << " | ";
 //    }
+    
 }

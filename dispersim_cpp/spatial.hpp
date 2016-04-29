@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <vector>
 
-void findNN(int focal_cell, int height, int width, int area);
+std::vector<int> findNN(int focal_cell, int height, int width, int area);
 
 #endif /* spatial_hpp */
 
