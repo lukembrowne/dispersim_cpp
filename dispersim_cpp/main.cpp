@@ -53,8 +53,6 @@ int main(int argc, const char * argv[]) {
     // boost::random::uniform_01 - generate uniform
     // Can set migration based on BCI paper in Plos one condit 2012
 
-  // If I put a list of all nearest neighbors in memory, how much space would that take?? Would that speed things up??
-    
     
 ////////////////////////
 ////////////////////////
@@ -166,8 +164,7 @@ int main(int argc, const char * argv[]) {
                 // Find surrounding 8 neighbors
                 // Returns position in array
                 // Use position to look up species later
-                 neighbors = findNN(empty_cell_iter,
-                                                    height, width, area);
+                 neighbors = findNN(empty_cell_iter, height, width, area);
                 
                 
                 // Disperse seeds from 8 neighbors into empty cell
@@ -227,36 +224,6 @@ int main(int argc, const char * argv[]) {
                    boost::random::discrete_distribution<> seed_winner_rng(probabilities);
                    sp[empty_cell_iter] = nn_sp_key[seed_winner_rng(generator)]; // Reassign species
 
-//                
-//                // Make a map that holds species - ## of seeds pair
-//                std::map <int, int> sp_seed;
-//            
-//                double seeds_total{0}; // Sum up total seeds to calculate relative frequency later
-//                
-//               for(auto iter : neighbors){
-//                   
-//                   sp_seed[sp[iter]] = seed_rng(generator) + sp_seed[sp[iter]];
-//                   
-//                   seeds_total = seeds_total + sp_seed[sp[iter]];
-//                   
-//                } // End looping over neighbors
-                
-                
-                
-//                    // Assign probs based on relative frequency
-//                std::vector<double> probabilities(sp_seed.size());
-//                int sp_names[sp_seed.size()];
-//                int i = 0;
-//                for(auto& iter : sp_seed){
-//                    probabilities[i] = iter.second / seeds_total;
-//                    sp_names[i] = iter.first;
-//                    i++;
-//               //     std::cout << probabilities[i-1] << " ";
-//                }
-//                
-//            // Choose a winner / seed to establish based on relative frequency and weighted probability
-//               boost::random::discrete_distribution<> seed_winner_rng(probabilities);
-//               sp[empty_cell_iter] = sp_names[seed_winner_rng(generator)]; // Reassign species
                 
             } // End looping over empty cells
             
@@ -267,6 +234,8 @@ int main(int argc, const char * argv[]) {
         }
                        
     } // End step loop
+    
+    writeLandscape(sp, height, width);
 
 
     

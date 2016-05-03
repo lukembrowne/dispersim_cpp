@@ -10,6 +10,7 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 
 // Returns probability of dispersal for negative exponential, discretized
@@ -61,3 +62,27 @@ int calcSpeciesRichness(std::vector<int>& sp){
     
     return richness;
 }
+
+
+// Write landscape to file
+// Export as tab delimited file
+
+void writeLandscape(std::vector<int>& sp, int height, int width){
+    
+    std::ofstream out("landscape_species.txt");
+    
+    for(int i = 0; i < width; i++){
+        for(int j = 0; j < height; j++){
+            out << sp[i*width + j] << "\t";
+        } // End column loop
+        
+        out << "\n";
+        
+    } // End row loop
+    
+    out.close();
+    
+    std::cout << "Successfully wrote to file... \n";
+    
+}
+

@@ -21,6 +21,12 @@ std::vector<int> findNN(int focal_cell, int height, int width, int area){
     // https://community.oracle.com/thread/1257021?start=0&tstart=0
     // http://stackoverflow.com/questions/3775905/programming-logic-how-to-check-for-neighbors-in-a-grid
     
+//    //i = x + width*y;
+//    and the reverse operation is
+//    
+//    x = i % width;    // % is the "modulo operator", the remainder of i / width;
+//    y = i / width;    // where "/" is an integer division
+    
     assert(focal_cell >= 0 && focal_cell < area);
 
     // N
