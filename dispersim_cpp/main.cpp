@@ -27,10 +27,14 @@ int main(int argc, const char * argv[]) {
     float mortality_rate = 0.1; // Proportion of landscape dying per step
     
     // Species parameters
-    int n_sp_init = 1000;
+    int n_sp_init = 100;
     int n_alleles_init = 10;
     float seed_disp_dist = 5; // In units of cells
     int seeds_per_adult = 500; // Equal to fecundity..
+    
+    // NDD parameters
+    float min_ndd = 1; // Min must be greater than max
+    float max_ndd = 0;
     
     
     // Landscape parameters
@@ -38,7 +42,7 @@ int main(int argc, const char * argv[]) {
     int height = 250;
     int area = width * height;
     
-    int dispersal_mode = 0; // 1 == global; 0 == local
+    int dispersal_mode = 1; // 1 == global; 0 == local
     
     int n_dead_per_step = mortality_rate * area;
     int empty_cell_indices[n_dead_per_step]; // Initialize
@@ -101,6 +105,28 @@ int main(int argc, const char * argv[]) {
             iter = gen_rng(generator);
         }
     
+    // Assign NDD values to species
+    // Lower species id == Stronger NDD
+    
+    std::vector<float> ndd_sp(n_sp_init);
+    
+    float ndd_increment = std::abs((max_ndd-min_ndd))/(float)n_sp_init;
+    int i = 0;
+    
+    // If min and max are the same...
+    if(min_ndd == max_ndd){
+        for (auto& iter : ndd_sp){
+            iter = max_ndd;
+        }
+    } else {
+    
+    // If variation in NDD (min_ndd != max_ndd)...
+    for(float ndd_val = max_ndd; ndd_val< min_ndd; ndd_val += ndd_increment){
+        ndd_sp[i] = ndd_val;
+        i++;
+        if(i == (n_sp_init-1)) break;
+        }
+    }
     
     // Create RNG for seed dipsersal
     
@@ -199,7 +225,7 @@ int main(int argc, const char * argv[]) {
                 seeds_total = 0; // Reset total to 0
                 
                 for(auto& nn_sp : nn_sp_key){
-                    seeds[nn_sp] = seeds[nn_sp] * .5; // Reduce by half
+                    seeds[nn_sp] = seeds[nn_sp] * ndd_sp[nn_sp]; // Reduce by half
                     
                     seeds_total += seeds[nn_sp]; // Add to total seeds
                     
