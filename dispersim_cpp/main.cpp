@@ -51,11 +51,11 @@ int main(int argc, const char * argv[]) {
     int seeds_per_adult = 500; // Equal to fecundity..
     
     // NDD parameters
-    float max_cndd = 0.0;
-    float min_cndd = 1.0; // Min must be greater numerically than max, but mean weaker NDD
+    float max_cndd = 0.1; // Lowering this produced more clustered patterns... WHY??
+    float min_cndd = 0.1; // Min must be greater numerically than max, but means weaker NDD
    
-    float max_gndd = 0.0;
-    float min_gndd = 1.0; // Min must be greater numerically than max, but mean weaker NDD
+    float max_gndd = 0.1;
+    float min_gndd = 0.1; // Min must be greater numerically than max, but means weaker NDD
     
     
     
@@ -63,6 +63,8 @@ int main(int argc, const char * argv[]) {
     int width  = 250;
     int height = 250;
     int area = width * height;
+    
+    float migration_rate = 0.0001; // Immigrant per recruit (~1 in 10,000) is from BCI paper
     
     int dispersal_mode = 0; // 1 == global; 0 == local
     
@@ -73,12 +75,6 @@ int main(int argc, const char * argv[]) {
     // Lagniappe parameters
     
     int print_every_n_steps = 50;
-    
-   /// NEED TO ADD IN MIGRATION
-    
-    // boost::random::uniform_01 - generate uniform
-    // Can set migration based on BCI paper in Plos one condit 2012
-
     
 ////////////////////////
 ////////////////////////
@@ -102,6 +98,10 @@ int main(int argc, const char * argv[]) {
     
     // RNG that randomly chooses cells in landscape - used for mortality algorithm
         std::uniform_int_distribution<int> cell_rng(0, (area-1));
+    
+    // RNG for Migration
+    std::uniform_real_distribution<> migration_rng(0, 1);
+
     
     // RNG for species - ranging from 0 to # of species - 1 (species ID used for indexing)
         std::uniform_int_distribution<int> species_rng(0, n_sp_init - 1);
@@ -218,6 +218,19 @@ int main(int argc, const char * argv[]) {
         // Loop through empty cells and assign new species
         
         for(auto& empty_cell_iter : empty_cell_indices){
+            
+            
+            // MIGRATION -
+            
+            if(migration_rng(generator) <= migration_rate){
+            
+                // Replace with random species with random genotype
+                
+                sp[empty_cell_iter] = species_rng(generator);
+                gen[empty_cell_iter] = gen_rng(generator);
+                
+                continue; // Jump to next empty cell
+            }
             
             // GLOBAL DISPERAL
             // Need to change so that some proportion of adults contribute seedlings, but these are still evaluated for NDD effects.. just that dispersal is not limited by proximity - randomly choose 8 adults to contribute seeds
