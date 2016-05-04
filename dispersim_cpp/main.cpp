@@ -15,6 +15,24 @@
 #include "spatial.hpp"
 #include "utils.hpp"
 
+// Holds information used in NN and GNDD and CNDD calculation
+struct key {
+    int sp;
+    int gen;
+    int gen_1d_index;
+};
+
+bool SortKey( const key& elem1, const key& elem2 )
+{
+    return elem1.gen_1d_index < elem2.gen_1d_index;
+}
+
+bool CompKey(const key& elem1, const key& elem2){
+    return elem1.gen_1d_index == elem2.gen_1d_index;
+}
+
+
+/// MAIN
 
 int main(int argc, const char * argv[]) {
 
@@ -27,20 +45,23 @@ int main(int argc, const char * argv[]) {
     float mortality_rate = 0.1; // Proportion of landscape dying per step
     
     // Species parameters
-    int n_sp_init = 50;
-    int n_alleles_init = 10;
+    int n_sp_init = 100;
+    int n_alleles_init = 5;
     float seed_disp_dist = 5; // In units of cells
     int seeds_per_adult = 500; // Equal to fecundity..
     
     // NDD parameters
-    float max_ndd = 0;
-    float min_ndd = 1; // Min must be greater numerically than max, but mean weaker NDD
+    float max_cndd = 0.0;
+    float min_cndd = 1.0; // Min must be greater numerically than max, but mean weaker NDD
    
+    float max_gndd = 0.0;
+    float min_gndd = 1.0; // Min must be greater numerically than max, but mean weaker NDD
+    
     
     
     // Landscape parameters
-    int width  = 50;
-    int height = 50;
+    int width  = 250;
+    int height = 250;
     int area = width * height;
     
     int dispersal_mode = 0; // 1 == global; 0 == local
@@ -98,7 +119,7 @@ int main(int argc, const char * argv[]) {
     // Add genotypes randomly to species
     
         // Initialize genotype RNG
-        std::uniform_int_distribution<int> gen_rng(0, n_alleles_init);
+        std::uniform_int_distribution<int> gen_rng(0, (n_alleles_init-1));
 
         std::vector<int> gen(area); // Init vector that will hold species
     
@@ -109,25 +130,49 @@ int main(int argc, const char * argv[]) {
     // Assign NDD values to species
     // Lower species id == Stronger NDD
     
-    std::vector<float> ndd_sp(n_sp_init);
+    std::vector<float> cndd_sp(n_sp_init);
     
-    float ndd_increment = std::abs((max_ndd-min_ndd))/(float)n_sp_init;
+    float cndd_increment = std::abs((max_cndd-min_cndd))/(float)n_sp_init;
     int i = 0;
     
     // If min and max are the same...
-    if(min_ndd == max_ndd){
-        for (auto& iter : ndd_sp){
-            iter = max_ndd;
+    if(min_cndd == max_cndd){
+        for (auto& iter : cndd_sp){
+            iter = max_cndd;
         }
     } else {
     
     // If variation in NDD (min_ndd != max_ndd)...
-    for(float ndd_val = max_ndd; ndd_val <= min_ndd; ndd_val += ndd_increment){
-        ndd_sp[i] = ndd_val;
+    for(float cndd_val = max_cndd; cndd_val <= min_cndd; cndd_val += cndd_increment){
+        cndd_sp[i] = cndd_val;
         i++;
         if(i == n_sp_init) break; // Make sure it doensn't go out of bounds
         }
     }
+    
+    // GENOTYPE DEPENDENT NDD (GNDD)
+    
+    std::vector<float> gndd_sp(n_sp_init);
+    
+    float gndd_increment = std::abs((max_gndd-min_gndd))/(float)n_sp_init;
+    i = 0;
+    
+    // If min and max are the same...
+    if(min_gndd == max_gndd){
+        for (auto& iter : gndd_sp){
+            iter = max_gndd;
+        }
+    } else {
+        
+        // If variation in NDD (min_ndd != max_ndd)...
+        for(float gndd_val = max_gndd; gndd_val <= min_gndd; gndd_val += gndd_increment){
+            gndd_sp[i] = gndd_val;
+            i++;
+            if(i == n_sp_init) break; // Make sure it doensn't go out of bounds
+        }
+    }
+    
+    
     
     // Create RNG for seed dipsersal
     
@@ -148,7 +193,8 @@ int main(int argc, const char * argv[]) {
     //Initialize vectors for survival calculations
 
     std::vector<int> neighbors(8); // Change from 8 if doing more than 8 nearest neighbors
-    std::vector<float> seeds(n_sp_init, 0.0); // Initialize to 0
+    std::vector<float> seeds_by_sp(n_sp_init, 0.0); // Initialize to 0
+    std::vector<float> seeds_by_gen(n_sp_init * n_alleles_init, 0.0);
     float seeds_total = {0.0};
     
 ////////////////////////
@@ -158,13 +204,11 @@ int main(int argc, const char * argv[]) {
     
     std::cout << "\n\n";
     
-  
     for (int step = 1; step <= steps; step++){
         
         
     // Death of adults
     // A set proportion dies every step, dependent on mortality rate
-        
         
         // Choose which cells will die
         for(auto& empty_cell_iter : empty_cell_indices) {
@@ -176,6 +220,7 @@ int main(int argc, const char * argv[]) {
         for(auto& empty_cell_iter : empty_cell_indices){
             
             // GLOBAL DISPERAL
+            // Need to change so that some proportion of adults contribute seedlings, but these are still evaluated for NDD effects.. just that dispersal is not limited by proximity - randomly choose 8 adults to contribute seeds
             
                 // Assigns species to empty cell based on relative frequency in population
                 // May need to exclude dead trees from being chosen..
@@ -184,48 +229,80 @@ int main(int argc, const char * argv[]) {
                     continue;
                 }
         
+            
+            
             // LOCAL DISPERSAL
             if(dispersal_mode == 0){
-
-              
+                
+                // Initialize variables
+                std::fill(seeds_by_sp.begin(), seeds_by_sp.end(), 0);
+                seeds_total = 0; // Reset seeds total to 0
+                float seeds_to_add;
+                std::vector<key> nn_keys(8);
+                
+                
                 // Find surrounding 8 neighbors
-                // Returns position in array
-                // Use position to look up species later
+                // Returns position in 1d array
                  neighbors = findNN(empty_cell_iter, height, width, area);
                 
                 
                 // Disperse seeds from 8 neighbors into empty cell
-                
-                // Loop over neighbors
-                std::vector<int> nn_sp_key(8);
-                int i = 0;
+
+                // Loop over neighbors (1d array index for 8 NN)
+                i = 0;
                 for(auto iter : neighbors){
                     
                     // Generate species key
-                    // Hopefully more efficient than a map
-                    nn_sp_key[i] = sp[iter];
-                    
+                    // A vector of length 8 that holds species names
+                    nn_keys[i].sp = sp[iter]; // SPecies id
+                    nn_keys[i].gen = gen[iter]; // Genotype id
+                    nn_keys[i].gen_1d_index = sp[iter] * n_alleles_init + gen[iter]; // Position in 1d array
+
                     // Vector holding number of seeds contributed by each NN
+                    seeds_to_add = seed_rng(generator);
                     
-                    seeds[sp[iter]] += seed_rng(generator);
-                    //std::cout << nn_seeds[i] << " ";
-                    i++;
-                   
+                    seeds_by_gen[nn_keys[i].gen_1d_index] += seeds_to_add; // Add seeds for that specific genotype
+                    
+//                    // Printing for error checking
+//                    std::cout << "Species: " << nn_keys[i].sp << " | Gen:" << nn_keys[i].gen << " | Gen_index: " << nn_keys[i].gen_1d_index << " | Seeds: " << seeds_by_gen[nn_keys[i].gen_1d_index] << "\n" ;
+
+                     i++;
+                    
                 }
-                   //  std::cout << "\n";
                 
-                // Remove duplicate species in species key list
-                std::sort(nn_sp_key.begin(), nn_sp_key.end());
-                nn_sp_key.erase(std::unique(nn_sp_key.begin(), nn_sp_key.end()), nn_sp_key.end());
+//                std::cout << "\n| ------------- | \n";
                 
                 
+                // Need to sort and remove duplicates of species - genotype pairs to avoid double counting
+                // Relies on comparison functions in 'key' structure
+                
+                    // Sort based on gen_1d_index
+                     std::sort(nn_keys.begin(), nn_keys.end(), SortKey);
+                    // Delete duplicates based on gen_1d_index
+                    nn_keys.erase(std::unique(nn_keys.begin(), nn_keys.end(), CompKey), nn_keys.end());
+                
+//                
+//                // Printing for error checking
+//                    std::cout << "\n| ----- Post sort and delete dupes -------- | \n";
+//                    i = 0;
+//                    for(auto iter : nn_keys){
+//                    // Printing for error checking
+//                    std::cout << "Species: " << nn_keys[i].sp << " | Gen:" << nn_keys[i].gen << " | Gen_index: " << nn_keys[i].gen_1d_index << " | Seeds: " << seeds_by_gen[nn_keys[i].gen_1d_index] << "\n" ;
+//                    i++;
+//                    }
+//                std::cout << "\n| ------------- | \n";
                 
                 
-                // NDD algorithm
-                // Reduce number of seeds based on density
-                seeds_total = 0; // Reset total to 0
                 
-                for(auto& nn_sp : nn_sp_key){
+                
+                // GNDD
+                // Reduce densities based on Genotype - GNDD
+                
+                std::vector<float> n_gens_per_sp(n_sp_init, 0.0); // Move outside loop?
+                
+//                std::cout << "\n| ----- After GNDD -------- | \n";
+
+                for(int i = 0; i < nn_keys.size(); i++){
                     
                     // Following equation of Harms et al. 2000
                     // Where ## of recruits is a function of beta exponent and log + 1 density of seeds
@@ -233,34 +310,76 @@ int main(int argc, const char * argv[]) {
                     // Adding + 1 to recruit density makes it so theres always at least 2.7 possible recruits
                     // Assume intercept (alpha) = 0
                     
-                    seeds[nn_sp] = std::exp(ndd_sp[nn_sp] * std::log(seeds[nn_sp] + 1) + 1);
-                    seeds_total += seeds[nn_sp]; // Add to total seeds
+                    seeds_by_gen[nn_keys[i].gen_1d_index] = std::exp(gndd_sp[nn_keys[i].sp] *
+                                                                                   std::log(seeds_by_gen[nn_keys[i].gen_1d_index]));
                     
+                    seeds_by_sp[nn_keys[i].sp] += seeds_by_gen[nn_keys[i].gen_1d_index]; // Add to total seeds
+                    
+                    n_gens_per_sp[nn_keys[i].sp] += 1;
+                    
+                    
+//                    // Printing for error checking
+//                    std::cout << "Species: " << nn_keys[i].sp << " | Gen:" << nn_keys[i].gen << " | Gen_index: " << nn_keys[i].gen_1d_index << " | Seeds: " << seeds_by_gen[nn_keys[i].gen_1d_index] << "\n" ;
                 }
+                
+                
+                
+                /// CNDD
+                // Reduce densities overall based on number of conspecifics, without regard to genotype
+                
+//                std::cout << "\n| ----- After CNDD -------- | \n";
+               
+                
+                for(int i = 0; i < nn_keys.size(); i++){ // Loop across species and gen keys
+                    
+                    seeds_by_gen[nn_keys[i].gen_1d_index] -= std::exp((cndd_sp[nn_keys[i].sp] *
+                                                                    std::log(seeds_by_sp[nn_keys[i].sp]))) / n_gens_per_sp[nn_keys[i].sp];
+                    
+                    seeds_total += seeds_by_gen[nn_keys[i].gen_1d_index];
+                    
+                 
+                }
+                
+
 
                 
                 // Assign probs based on relative frequency
-                std::vector<float> probabilities(nn_sp_key.size());
-                i = 0;
-                
-                for(auto& iter : nn_sp_key){
-                    probabilities[i] = (float)seeds[iter]/(float)seeds_total; // Need to cast as float or probability is 0
+                    std::vector<float> probabilities(nn_keys.size());
+                    i = 0;
                     
-                    seeds[iter] = 0; // Reset seeds count
+                    for(auto& iter : nn_keys){
+                        
+                        probabilities[i] = seeds_by_gen[nn_keys[i].gen_1d_index]/seeds_total;
+                        
+                        
+//                        // Printing for error checking
+//                        std::cout << "Species: " << nn_keys[i].sp << " | Gen:" << nn_keys[i].gen << " | Gen_index: " << nn_keys[i].gen_1d_index << " | Seeds: " << seeds_by_gen[nn_keys[i].gen_1d_index] << " Probability: " << probabilities[i] << "\n" ;
+//                        
+                        // Reset seeds count
+                        seeds_by_gen[nn_keys[i].gen_1d_index] = 0;
+                        
+                        i++;
+                    }
                     
-                    i++;
-                }
                 
                 
-                // Choose species to establish in empty cell
-                // Choose a winner / seed to establish based on relative frequency and weighted probability
-                   boost::random::discrete_distribution<> seed_winner_rng(probabilities);
-                   sp[empty_cell_iter] = nn_sp_key[seed_winner_rng(generator)]; // Reassign species
+                    // Choose species to establish in empty cell
+                    // Choose a winner / seed to establish based on relative frequency and weighted probability
+                       boost::random::discrete_distribution<> seed_winner_rng(probabilities);
+                
+                    int winner_index; // Move up and out of loop?
+                    winner_index = seed_winner_rng(generator);
+                
+                // Reassign Species ID and genotype for 'winner' then continue looping through empty cells
+                
+                    sp[empty_cell_iter] = nn_keys[winner_index].sp; // Reassign species
+                    gen[empty_cell_iter] = nn_keys[winner_index].gen;
 
                 
             } // End looping over empty cells
             
         } // End local dispersal if
+        
 
         if(step % print_every_n_steps == 0 | step == 1 ){
             std::cout << "Step:" << step << " | " << calcSpeciesRichness(sp) ;
@@ -268,6 +387,8 @@ int main(int argc, const char * argv[]) {
                        
     } // End step loop
     
+    
+    // Write landscape of species to tab delimited .txt file
     writeLandscape(sp, height, width);
 
 
