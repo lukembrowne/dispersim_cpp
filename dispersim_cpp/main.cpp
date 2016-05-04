@@ -27,22 +27,23 @@ int main(int argc, const char * argv[]) {
     float mortality_rate = 0.1; // Proportion of landscape dying per step
     
     // Species parameters
-    int n_sp_init = 100;
+    int n_sp_init = 50;
     int n_alleles_init = 10;
     float seed_disp_dist = 5; // In units of cells
     int seeds_per_adult = 500; // Equal to fecundity..
     
     // NDD parameters
-    float min_ndd = 1; // Min must be greater than max
     float max_ndd = 0;
+    float min_ndd = 1; // Min must be greater numerically than max, but mean weaker NDD
+   
     
     
     // Landscape parameters
-    int width  = 250;
-    int height = 250;
+    int width  = 50;
+    int height = 50;
     int area = width * height;
     
-    int dispersal_mode = 1; // 1 == global; 0 == local
+    int dispersal_mode = 0; // 1 == global; 0 == local
     
     int n_dead_per_step = mortality_rate * area;
     int empty_cell_indices[n_dead_per_step]; // Initialize
@@ -121,10 +122,10 @@ int main(int argc, const char * argv[]) {
     } else {
     
     // If variation in NDD (min_ndd != max_ndd)...
-    for(float ndd_val = max_ndd; ndd_val< min_ndd; ndd_val += ndd_increment){
+    for(float ndd_val = max_ndd; ndd_val <= min_ndd; ndd_val += ndd_increment){
         ndd_sp[i] = ndd_val;
         i++;
-        if(i == (n_sp_init-1)) break;
+        if(i == n_sp_init) break; // Make sure it doensn't go out of bounds
         }
     }
     
@@ -147,8 +148,8 @@ int main(int argc, const char * argv[]) {
     //Initialize vectors for survival calculations
 
     std::vector<int> neighbors(8); // Change from 8 if doing more than 8 nearest neighbors
-    std::vector<int> seeds(n_sp_init, 0.0); // Initialize to 0
-    int seeds_total = {0};
+    std::vector<float> seeds(n_sp_init, 0.0); // Initialize to 0
+    float seeds_total = {0.0};
     
 ////////////////////////
 ////////////////////////
@@ -225,14 +226,20 @@ int main(int argc, const char * argv[]) {
                 seeds_total = 0; // Reset total to 0
                 
                 for(auto& nn_sp : nn_sp_key){
-                    seeds[nn_sp] = seeds[nn_sp] * ndd_sp[nn_sp]; // Reduce by half
                     
+                    // Following equation of Harms et al. 2000
+                    // Where ## of recruits is a function of beta exponent and log + 1 density of seeds
+                    // Here, converting predicted log +1 density of recruits back to actual number of recruits with std::exp
+                    // Adding + 1 to recruit density makes it so theres always at least 2.7 possible recruits
+                    // Assume intercept (alpha) = 0
+                    
+                    seeds[nn_sp] = std::exp(ndd_sp[nn_sp] * std::log(seeds[nn_sp] + 1) + 1);
                     seeds_total += seeds[nn_sp]; // Add to total seeds
                     
                 }
 
                 
-                    // Assign probs based on relative frequency
+                // Assign probs based on relative frequency
                 std::vector<float> probabilities(nn_sp_key.size());
                 i = 0;
                 
