@@ -40,47 +40,29 @@ float neg_expo_discrete(float alpha, float dij, int R){
 
 
 
-// Calculate species richness
 
-int calcSpeciesRichness(std::vector<int>& sp){
-    
-    // Copy species vector
-    
-    
-    std::vector<int> sp_copy(sp);
-    
-    
-    // Sort vector before eliminating duplicates
-    std::sort(sp_copy.begin(), sp_copy.end());
-    
-    sp_copy.erase(std::unique(sp_copy.begin(), sp_copy.end()), sp_copy.end());
-    
-    int richness = sp_copy.size();
-    
-    std::cout << "Richness.. " << richness << " .. \n";
-    
-    
-    return richness;
-}
-
-
-// Write landscape to file
+// Write landscape for both species and genotypes to file
 // Export as tab delimited file
 
-void writeLandscape(std::vector<int>& sp, int height, int width){
+void writeLandscape(std::vector<int>& sp, std::vector<int>& gen, int height, int width){
     
-    std::ofstream out("landscape_species.txt");
+    std::ofstream out_species("landscape_species.txt");
+    std::ofstream out_genotypes("landscape_genotypes.txt");
     
     for(int i = 0; i < width; i++){
         for(int j = 0; j < height; j++){
-            out << sp[i*width + j] << "\t";
+            out_species << sp[i*width + j] << "\t";
+            out_genotypes<< gen[i*width + j] << "\t";
+
         } // End column loop
         
-        out << "\n";
+        out_species << "\n";
+        out_genotypes << "\n";
         
     } // End row loop
     
-    out.close();
+    out_species.close();
+    out_genotypes.close();
     
     std::cout << "Successfully wrote to file... \n";
     

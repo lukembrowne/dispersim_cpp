@@ -14,6 +14,7 @@
 #include <boost/random/mersenne_twister.hpp>
 #include "spatial.hpp"
 #include "utils.hpp"
+#include "summary.hpp"
 
 // Holds information used in NN and GNDD and CNDD calculation
 struct key {
@@ -45,17 +46,17 @@ int main(int argc, const char * argv[]) {
     float mortality_rate = 0.1; // Proportion of landscape dying per step
     
     // Species parameters
-    int n_sp_init = 100;
-    int n_alleles_init = 5;
+    int n_sp_init = 50;
+    int n_alleles_init = 15;
     float seed_disp_dist = 5; // In units of cells
     int seeds_per_adult = 500; // Equal to fecundity..
     
     // NDD parameters
     float max_cndd = 0.1; // Lowering this produced more clustered patterns... WHY??
-    float min_cndd = 0.1; // Min must be greater numerically than max, but means weaker NDD
+    float min_cndd = 0.9; // Min must be greater numerically than max, but means weaker NDD
    
-    float max_gndd = 0.1;
-    float min_gndd = 0.1; // Min must be greater numerically than max, but means weaker NDD
+    float max_gndd = 0.5;
+    float min_gndd = 0.5; // Min must be greater numerically than max, but means weaker NDD
     
     
     
@@ -395,14 +396,19 @@ int main(int argc, const char * argv[]) {
         
 
         if(step % print_every_n_steps == 0 | step == 1 ){
-            std::cout << "Step:" << step << " | " << calcSpeciesRichness(sp) ;
+           // std::cout << "Step:" << step << " | " << calcSpeciesRichness(sp) ;
+            
+            Summary test(sp, gen, n_sp_init, step);
+     
         }
                        
     } // End step loop
     
-    
+//    std::vector<float> test;
+//    test = calcGeneticRichness(n_sp_init, sp, gen);
+//    
     // Write landscape of species to tab delimited .txt file
-    writeLandscape(sp, height, width);
+    writeLandscape(sp, gen, height, width);
 
 
     
