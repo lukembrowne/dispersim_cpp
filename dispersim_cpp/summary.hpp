@@ -14,11 +14,8 @@
 
 
 
-// Summary class object that calculates summary statistics of the simulation and
-// Writes them to file, etc
-
-class Summary {
-    
+// Summary class object that calculates summary statistics of the simulation at a given step
+class Summary_step {
     
 public:
     
@@ -33,14 +30,16 @@ public:
     float allelic_richness_avg;
     
     //Constructor function
-    Summary(std::vector<int>& sp, std::vector<int>& gen, int n_sp_init, int step);
+    Summary_step(std::vector<int>& sp, std::vector<int>& gen, int n_sp_init, int step);
     
     // Member functions
     void calc_sp_richness(std::vector<int>& sp);
     void calc_allelic_richness(int n_sp_init, std::vector<int>& sp, std::vector<int>& gen);
     float calc_avg(std::vector<int> metric); // Maybe need to overload another for float?
-    void print();
+    void print(); // Print to console
 };
+
+
 
 
 #endif /* summary_hpp */

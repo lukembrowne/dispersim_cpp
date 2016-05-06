@@ -11,11 +11,14 @@
 
 #include <stdio.h>
 #include <vector>
+#include "summary.hpp"
 
 
 float neg_expo_discrete(float alpha, float dij, int R);
 
-void writeLandscape(std::vector<int>& sp, std::vector<int>& gen, int height, int width);
+void write_landscape(std::vector<int>& sp, std::vector<int>& gen, int height, int width);
+
+void write_summary(std::vector<Summary_step>& summary_over_time);
 
 
 #endif /* utils_hpp */

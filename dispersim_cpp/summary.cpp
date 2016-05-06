@@ -18,29 +18,29 @@
 
 // Calculate summary statistics when object is created
 
-Summary::Summary(std::vector<int>& sp, std::vector<int>& gen, int n_sp_init, int step){
+Summary_step::Summary_step(std::vector<int>& sp, std::vector<int>& gen, int n_sp_init, int step){
     
     // Save step
-    Summary::step = step;
+    Summary_step::step = step;
     
     // Species richness
-    Summary::calc_sp_richness(sp);
+    Summary_step::calc_sp_richness(sp);
     
     // Allelic richness
-    Summary::calc_allelic_richness(n_sp_init, sp, gen);
+    Summary_step::calc_allelic_richness(n_sp_init, sp, gen);
     
     // Average allelic richness
-    allelic_richness_avg = Summary::calc_avg(allelic_richness_by_sp);
+    allelic_richness_avg = Summary_step::calc_avg(allelic_richness_by_sp);
     
     
     // Print results
-    Summary::print();
+    Summary_step::print();
     
 }
 
 
 // SPECIES RICHNESS
-void Summary::calc_sp_richness(std::vector<int>& sp){
+void Summary_step::calc_sp_richness(std::vector<int>& sp){
     
     // Copy and sort species vector before eliminating duplicates
     std::vector<int> sp_copy(sp);
@@ -58,7 +58,7 @@ void Summary::calc_sp_richness(std::vector<int>& sp){
 
 
 // ALLELIC RICHNESS
-void Summary::calc_allelic_richness(int n_sp_init, std::vector<int>& sp, std::vector<int>& gen){
+void Summary_step::calc_allelic_richness(int n_sp_init, std::vector<int>& sp, std::vector<int>& gen){
     
     std::vector<float> allelic_richness(n_sp_init, 0.0);
 
@@ -91,7 +91,7 @@ void Summary::calc_allelic_richness(int n_sp_init, std::vector<int>& sp, std::ve
 
 // CALCULATE AVERAGE OF A METRIC
 // Used for averaging allelic richness across species, etc
-float Summary::calc_avg(std::vector<int> metric){
+float Summary_step::calc_avg(std::vector<int> metric){
     
     float sum = 0.0;
     
@@ -106,7 +106,7 @@ float Summary::calc_avg(std::vector<int> metric){
 
 
 // PRINTING FUNCTION
-void Summary::print(){
+void Summary_step::print(){
     
     std::cout << "Step: " << step << " | Sp. richness: " << sp_richness <<
     " | Allelic richness (avg.): " << allelic_richness_avg << "\n";

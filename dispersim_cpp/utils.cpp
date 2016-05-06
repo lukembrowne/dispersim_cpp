@@ -11,6 +11,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include "summary.hpp"
 
 
 // Returns probability of dispersal for negative exponential, discretized
@@ -37,14 +38,36 @@ float neg_expo_discrete(float alpha, float dij, int R){
     
 }
 
+// Write summary stats to file
+// Accepts a vector of summary objects and writes them to file
 
+void write_summary(std::vector<Summary_step>& summary_over_time){
+    
+    // Start file stream
+    std::ofstream out_summary("summary_over_time_overall.txt");
+    
+    // Set column names
+    out_summary << "step \t sp_richness \t allelic_richness_avg \n";
+    
+    // Loop through summaries by step
+    for(int i = 0; i < summary_over_time.size(); i++){
+        out_summary << summary_over_time[i].step << "\t";
+        out_summary << summary_over_time[i].sp_richness << "\t";
+        out_summary << summary_over_time[i].allelic_richness_avg << "\t";
+        out_summary << "\n"; // End line
+    }
+    
+    out_summary.close();
+    std::cout << "Successfully wrote summary_over_time_overall.txt to file... \n";
+
+}
 
 
 
 // Write landscape for both species and genotypes to file
 // Export as tab delimited file
 
-void writeLandscape(std::vector<int>& sp, std::vector<int>& gen, int height, int width){
+void write_landscape(std::vector<int>& sp, std::vector<int>& gen, int height, int width){
     
     std::ofstream out_species("landscape_species.txt");
     std::ofstream out_genotypes("landscape_genotypes.txt");

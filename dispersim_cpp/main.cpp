@@ -42,7 +42,7 @@ int main(int argc, const char * argv[]) {
 // PARAMETERS
     
     // Number of generations
-    int steps = 1000; // Each step = 5-10 years with 0.10 % mortality rate
+    int steps = 100; // Each step = 5-10 years with 0.10 % mortality rate
     float mortality_rate = 0.1; // Proportion of landscape dying per step
     
     // Species parameters
@@ -59,10 +59,9 @@ int main(int argc, const char * argv[]) {
     float min_gndd = 0.5; // Min must be greater numerically than max, but means weaker NDD
     
     
-    
     // Landscape parameters
-    int width  = 250;
-    int height = 250;
+    int width  = 100;
+    int height = 100;
     int area = width * height;
     
     float migration_rate = 0.0001; // Immigrant per recruit (~1 in 10,000) is from BCI paper
@@ -74,8 +73,9 @@ int main(int argc, const char * argv[]) {
     
     
     // Lagniappe parameters
+    int save_every_n_steps = 10;
     
-    int print_every_n_steps = 50;
+    std::vector<Summary_step> summary_over_time;
     
 ////////////////////////
 ////////////////////////
@@ -86,9 +86,7 @@ int main(int argc, const char * argv[]) {
     std::cout << "| ---------------------------- | \n";
     std::cout << "Steps: " << steps << " or ~ " << steps * 5 << " years .. " << steps / 10 <<" generations \n";
     std::cout << "Area: " << (width * 5 * height * 5)/10000 << " ha \n";
-
-    
-    
+  
     
     // Initialize Random number generators
     // Good info on generating random numbers in C++
@@ -395,21 +393,27 @@ int main(int argc, const char * argv[]) {
         } // End local dispersal if
         
 
-        if(step % print_every_n_steps == 0 | step == 1 ){
+        if(step % save_every_n_steps == 0 | step == 1 ){
            // std::cout << "Step:" << step << " | " << calcSpeciesRichness(sp) ;
             
-            Summary test(sp, gen, n_sp_init, step);
+            Summary_step summary(sp, gen, n_sp_init, step);
+            
+            summary_over_time.push_back(summary);
      
         }
                        
     } // End step loop
-    
-//    std::vector<float> test;
-//    test = calcGeneticRichness(n_sp_init, sp, gen);
-//    
-    // Write landscape of species to tab delimited .txt file
-    writeLandscape(sp, gen, height, width);
 
+    
+    // Writing things to file
+    
+    // Write landscape of species to tab delimited .txt file
+   // write_landscape(sp, gen, height, width);
+
+    
+    // Write summary to file
+    
+    write_summary(summary_over_time);
 
     
     return 0;
