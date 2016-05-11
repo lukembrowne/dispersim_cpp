@@ -34,7 +34,8 @@ public:
     
     // Member functions
     void calc_sp_richness(std::vector<int>& sp);
-    void calc_allelic_richness(int n_sp_init, std::vector<int>& sp, std::vector<int>& gen);
+    void calc_allelic_richness(int n_sp_init, std::vector<int>& sp,
+                               std::vector<int>& gen);
     float calc_avg(std::vector<int> metric); // Maybe need to overload another for float?
     void print(); // Print to console
 };

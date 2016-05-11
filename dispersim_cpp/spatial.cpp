@@ -27,6 +27,25 @@ std::vector<int> findNN(int focal_cell, int height, int width, int area){
 //    x = i % width;    // % is the "modulo operator", the remainder of i / width;
 //    y = i / width;    // where "/" is an integer division
     
+    
+// From a conway game of life webpage - not sure exactly what it does
+//    int neighbours( int xx, int yy ) {
+//        int n = 0, nx, ny;
+//        for( int y = -1; y < 2; y++ ) {
+//            for( int x = -1; x < 2; x++ ) {
+//                if( !x && !y ) continue;
+//                nx = ( wid + xx + x ) % wid;
+//                ny = ( hei + yy + y ) % hei;
+//                n += wrd->at( nx, ny ) > 0 ? 1 : 0;
+//            }
+//        }
+//        return n;
+    
+    
+    
+    
+    
+    
     assert(focal_cell >= 0 && focal_cell < area);
 
     // N
