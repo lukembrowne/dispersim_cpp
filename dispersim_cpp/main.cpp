@@ -12,10 +12,12 @@
 #include <map>
 #include <boost/random/discrete_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
-#include "spatial.hpp"
 #include "utils.hpp"
 #include "summary.hpp"
 #include "neighbors.hpp"
+#include "sim.hpp"
+#include <iomanip>
+#include <sstream>
 
 
 
@@ -27,34 +29,37 @@ int main(int argc, const char * argv[]) {
 ////////////////////////
 // PARAMETERS
     
+    // Something strange happening where landscapes get vertical striping in species, ex when radius = 5 and disp = 3
+    
+    // Looks find when radius = 1, but banding happens when radius = 2
     
     // Lagniappe parameters
-    int save_every_n_steps = 100;
+    int save_every_n_steps = 25;
     bool verbose = false;
     
     // Number of generations
-    int steps = 500; // Each step = 5-10 years with 0.10 % mortality rate
-    float mortality_rate = 0.1; // Proportion of landscape dying per step
+    int steps = 300; // Each step = 5-10 years with 0.10 % mortality rate
+    float mortality_rate = 0.25; // Proportion of landscape dying per step
     
     // Species parameters
     int n_sp_init = 50;
-    int n_alleles_init = 5;
-    float seed_disp_dist = 5; // In units of cells
-    int neighbor_radius = 5;
+    int n_alleles_init = 2;
+    float seed_disp_dist = 3; // In units of cells
+    int neighbor_radius = 5; // Miranda = 5; Banitz = 20
 
     int seeds_per_adult = 500; // Equal to fecundity..
     
     // NDD parameters
-    float max_cndd = 1.0; // Lowering this produced more clustered patterns... WHY??
-    float min_cndd = 1.0; // Min must be greater numerically than max, but means weaker NDD
+    float max_cndd = 1.;
+    float min_cndd = 1.; // Min must be greater numerically than max, but means weaker NDD
    
     float max_gndd = 1.0;
     float min_gndd = 1.0; // Min must be greater numerically than max, but means weaker NDD
     
     
     // Landscape parameters
-    int width  = 250;
-    int height = 250;
+    int width  = 100;
+    int height = 100;
     int area = width * height;
     
     float migration_rate = 0.0001; // Immigrant per recruit (~1 in 10,000) is from BCI paper; 1 in 9000 used in Muller Landau 2007
@@ -62,7 +67,7 @@ int main(int argc, const char * argv[]) {
     int dispersal_mode = 0; // 1 == global; 0 == local
     
     int n_dead_per_step = mortality_rate * area;
-    int empty_cell_indices[n_dead_per_step]; // Initialize
+    std::vector<int> empty_cell_indices(n_dead_per_step); // Initialize
     
     
     std::vector<Summary_step> summary_over_time; // Initialize
@@ -179,11 +184,11 @@ int main(int argc, const char * argv[]) {
     Neighbors neighbors(neighbor_radius,
                         n_sp_init, n_alleles_init);
     
-     neighbors.initSeedRNG(neighbor_radius,
+    neighbors.initSeedRNG(neighbor_radius,
                            seed_disp_dist,
                            seeds_per_adult);
     
-    
+
 ////////////////////////
 ////////////////////////
     
@@ -198,15 +203,14 @@ int main(int argc, const char * argv[]) {
     // A set proportion dies every step, dependent on mortality rate
         
         // Choose which cells will die
-        for(auto& empty_cell_iter : empty_cell_indices) {
-            empty_cell_iter = cell_rng(generator);
+        for(int i = 0; i < empty_cell_indices.size(); i++) {
+            empty_cell_indices[i] = cell_rng(generator);
         }
         
         // Loop through empty cells and assign new species
-        
+ 
         for(auto& empty_cell_iter : empty_cell_indices){
-            
-            
+
             // MIGRATION -
             
             if(migration_rng(generator) <= migration_rate){
@@ -215,6 +219,7 @@ int main(int argc, const char * argv[]) {
                 
                 sp[empty_cell_iter] = species_rng(generator);
                 gen[empty_cell_iter] = gen_rng(generator);
+            
                 
                 continue; // Jump to next empty cell
             }
@@ -233,8 +238,7 @@ int main(int argc, const char * argv[]) {
             
             // LOCAL DISPERSAL
             if(dispersal_mode == 0){
-                
-                
+
                 // Reset neighbors object
                 neighbors.reset();
                 
@@ -244,7 +248,7 @@ int main(int argc, const char * argv[]) {
                                           neighbor_radius,
                                           sp, gen, n_alleles_init,
                                           n_sp_init);
-                
+       
                 // Disperse seeds into cell
                 neighbors.disperseSeeds(generator);
                 
@@ -252,15 +256,14 @@ int main(int argc, const char * argv[]) {
                 neighbors.GNDD(gndd_sp);
                 
                 
-//                // Print
+                // Print
 //                neighbors.printStatus(neighbor_radius, n_sp_init, n_alleles_init);
-                
+
                 // CNDD process
                 neighbors.CNDD(cndd_sp);
                 
-//                // Print
-//                neighbors.printStatus(neighbor_radius, n_sp_init, n_alleles_init);
-                
+                // Print
+               if(verbose) neighbors.printStatus(neighbor_radius, n_sp_init, n_alleles_init);
                 
                 // Count up seeds
                 neighbors.totalSeeds();
@@ -283,6 +286,20 @@ int main(int argc, const char * argv[]) {
             Summary_step summary(sp, gen, n_sp_init, step);
             
             summary_over_time.push_back(summary);
+            
+            
+            // Write landscape of species to tab delimited .txt file
+            std::string species_filename = "landscape_species_step_";
+            std::string suffix = ".txt";
+            
+            // Write to buffer to add leading 0s
+            std::stringstream buffer;
+            
+            buffer << species_filename <<  std::setw(3) << std::setfill('0') << step << suffix;
+        
+            write_landscape(sp, gen, height, width,  buffer.str());
+            
+            
      
         }
                        
@@ -292,7 +309,8 @@ int main(int argc, const char * argv[]) {
     // Writing things to file
     
     // Write landscape of species to tab delimited .txt file
-   write_landscape(sp, gen, height, width);
+   std::string species_filename = "landscape_species_FINAL.txt";
+   write_landscape(sp, gen, height, width, species_filename);
 
     
     // Write summary to file
