@@ -65,7 +65,6 @@ public:
     std::vector<bool> nn_gen_1d_index_dupe; // TRUE if is a duplicate
     std::vector<float> probabilities; // Recruitment probabilities
     
-    // One for each neighbor - should this be a vector of rngs?
     std::vector<std::binomial_distribution<int>> seed_rng;
     std::vector<float> seeds_by_sp; // Initialize to 0
     std::vector<float> dead_seeds_sp;
@@ -90,7 +89,8 @@ public:
                          int neighbor_radius,
                          std::vector<int>& sp,
                          std::vector<int>& gen,
-                         int n_alleles_init);
+                         int n_alleles_init,
+                         int n_sp_init);
     
     // Generate numeber of seeds contributed by each neighbor
     // Based on distance and neg exponential dispersal kernel
@@ -108,13 +108,19 @@ public:
     void totalSeeds();
     
     // Choose recruit based on relative frequency in cell after GNDD and CNDD
-    int chooseWinner(std::mt19937& generator);
+    void chooseWinner(std::mt19937& generator,
+                      int focal_cell,
+                      std::vector<int>& sp,
+                      std::vector<int>& gen,
+                      int n_sp_init,
+                      int n_alleles_init);
     
     // Print status
     void printStatus(int neighbor_radius, int n_sp_init, int n_alleles_init);
     
+    // Reset - set values back to 0
+    void reset();
     
-    // Reset? - set all values back to 0
 };
 
 

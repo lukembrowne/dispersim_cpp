@@ -157,16 +157,25 @@ void Neighbors::updateNeighbors(int focal_cell, int height,
                                 int neighbor_radius,
                                 std::vector<int>& sp,
                                 std::vector<int>& gen,
-                                int n_alleles_init){
+                                int n_alleles_init,
+                                int n_sp_init){
     
     // Update indices
+    // Adds 1d array indices of neighbors to member var nn_index
     Neighbors::getNeighborIndex(focal_cell, height, width, area, neighbor_radius);
     
     // Use indices to update nn_sp and nn_gen
     int i = 0;
     for(auto& iter : this->nn_index){
+        
+        // Make sure sp number isn't crazy
         this->nn_sp[i] = sp[iter];
+        assert(sp[iter] <= n_sp_init);
+        
+        // Make sure genotype is within range
         this->nn_gen[i] = gen[iter];
+        assert(gen[iter] <= n_alleles_init);
+        
         // Index for seeds_by_gen array
         this->nn_gen_1d_index[i] = sp[iter] * n_alleles_init + gen[iter];
         i++;
@@ -257,9 +266,18 @@ void Neighbors::CNDD(std::vector<float>& cndd_sp){
     
     for(int i = 0; i < seeds_by_sp.size(); i++){
         
+        // Check to make sure seeds don't equal 0
+        // or else will take log of 0 and cause issues
+        
+        if(seeds_by_sp[i] == 0){
+            dead_seeds_sp[i] = 0;
+       
+        } else {
+   
         dead_seeds_sp[i] = this->seeds_by_sp[i] -
                             std::exp(cndd_sp[i] *
                             std::log(seeds_by_sp[i]));
+        }
         
     }
     
@@ -275,8 +293,14 @@ void Neighbors::CNDD(std::vector<float>& cndd_sp){
             continue;
         }
         
-
+        // Check for 0's or else might divide by 0
+        
+        if(seeds_by_sp[this->nn_sp[i]] == 0){
+            continue;
+        } else {
+        
         this->seeds_by_gen[this->nn_gen_1d_index[i]] -= this->seeds_by_gen[this->nn_gen_1d_index[i]]/seeds_by_sp[this->nn_sp[i]] * dead_seeds_sp[this->nn_sp[i]];
+        }
 
     }
 } // End function
@@ -290,12 +314,21 @@ void Neighbors::totalSeeds(){
     
         this->seeds_total += this->seeds_by_gen[i];
     }
+    
+    assert(this->seeds_total >= 0);
 }
 
 
 // Choose winner
+// Lottery based on relative frequency in cell
+// Then assigns species and genotype to focal cell
 
-int Neighbors::chooseWinner(std::mt19937& generator){
+void Neighbors::chooseWinner(std::mt19937& generator,
+                             int focal_cell,
+                             std::vector<int>& sp,
+                             std::vector<int>& gen,
+                             int n_sp_init,
+                             int n_alleles_init){
 
     
     // Assign probs based on relative frequency
@@ -321,18 +354,20 @@ int Neighbors::chooseWinner(std::mt19937& generator){
     // Choose a winner / seed to establish based on relative frequency and weighted probability
     boost::random::discrete_distribution<> seed_winner_rng(this->probabilities);
     
+    
+    // Winner index is index of probabilities - which is species x gen
     int winner_index; // Move up and out of loop?
     winner_index = seed_winner_rng(generator);
-
     
-    // Print winner to console
-
-        std::cout << "\n\n Winner is.. Sp: " << this->nn_sp[winner_index] <<
-        " | Genotype: " << this->nn_gen[winner_index] << "\n\n\n" <<
-        "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n\n";
-
+    // Reassign Species ID and genotype for 'winner' then continue looping through empty cells
     
-    return(winner_index);
+    // Error check
+    assert(this->nn_sp[winner_index / n_alleles_init] <= n_sp_init);
+    assert(this->nn_gen[winner_index % n_alleles_init] <= n_alleles_init);
+    
+    // Have to do modulus and division operation in indexing to find species and genotype
+    sp[focal_cell] = this->nn_sp[winner_index / n_alleles_init];
+    gen[focal_cell] = this->nn_gen[winner_index % n_alleles_init];
     
 }
 
@@ -399,6 +434,24 @@ void Neighbors::printStatus(int neighbor_radius, int n_sp_init, int n_alleles_in
     }
   
 }
+
+
+// Reset - reset values back to 0
+
+void Neighbors::reset(){
+    
+    std::fill(nn_gen_1d_index_dupe.begin(),
+              nn_gen_1d_index_dupe.end(),
+              false);
+    std::fill(seeds_by_sp.begin(), seeds_by_sp.end(), 0);
+    std::fill(dead_seeds_sp.begin(), dead_seeds_sp.end(), 0);
+    std::fill(seeds_by_gen.begin(), seeds_by_gen.end(), 0);
+    
+    this->seeds_total = 0;
+    
+}
+
+
 
 
 
