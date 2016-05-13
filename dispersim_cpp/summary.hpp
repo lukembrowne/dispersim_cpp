@@ -11,6 +11,8 @@
 
 #include <stdio.h>
 #include <vector>
+#include "sim.hpp"
+#include "params.hpp"
 
 
 
@@ -30,7 +32,7 @@ public:
     float allelic_richness_avg;
     
     //Constructor function
-    Summary_step(std::vector<int>& sp, std::vector<int>& gen, int n_sp_init, int step);
+    Summary_step(Sim& sim, Params& params, int step);
     
     // Member functions
     void calc_sp_richness(std::vector<int>& sp);

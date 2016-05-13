@@ -17,9 +17,11 @@
 
 // Constructor function - initialize member variables
 // The functions following the colon is a initialization list
-Neighbors::Neighbors(int neighbor_radius, int n_sp_init, int n_alleles_init){
+Neighbors::Neighbors(Params& params){
     
-    n_neighbors = (((2 * neighbor_radius) + 1) * ((2 * neighbor_radius) + 1)) - 1; // Minus one to exclude self
+    
+    // Calculate number of neighbors based on radius -Minus one to exclude self
+    n_neighbors = (((2 * params.neighbor_radius) + 1) * ((2 * params.neighbor_radius) + 1)) - 1;
     
     // Resize / initialize vectors
     seed_rng.resize(n_neighbors);
@@ -30,10 +32,10 @@ Neighbors::Neighbors(int neighbor_radius, int n_sp_init, int n_alleles_init){
     nn_gen_1d_index_dupe.resize(n_neighbors);
     
     
-    seeds_by_sp.resize(n_sp_init);
-    dead_seeds_sp.resize(n_sp_init);
-    seeds_by_gen.resize(n_sp_init * n_alleles_init);
-    probabilities.resize(n_sp_init * n_alleles_init);
+    seeds_by_sp.resize(params.n_sp_init);
+    dead_seeds_sp.resize(params.n_sp_init);
+    seeds_by_gen.resize(params.n_sp_init * params.n_alleles_init);
+    probabilities.resize(params.n_sp_init * params.n_alleles_init);
     
     seeds_total = {0.0};
 
@@ -41,9 +43,7 @@ Neighbors::Neighbors(int neighbor_radius, int n_sp_init, int n_alleles_init){
 
 
 //Initialize seed RNGS based on distance
-void Neighbors::initSeedRNG(int neighbor_radius,
-                            int seed_disp_dist,
-                            int seeds_per_adult){
+void Neighbors::initSeedRNG(Params& params){
     
     
     /////////////////////////////////
@@ -57,22 +57,22 @@ void Neighbors::initSeedRNG(int neighbor_radius,
     
     int i = 0; // For counter
     
-    for(int row = 0; row < (2 * neighbor_radius + 1); row++){
+    for(int row = 0; row < (2 * params.neighbor_radius + 1); row++){
         
-        for(int col = 0; col < (2 * neighbor_radius + 1); col++){
+        for(int col = 0; col < (2 * params.neighbor_radius + 1); col++){
             
             
-            if(row == neighbor_radius & col == neighbor_radius){
+            if(row == params.neighbor_radius & col == params.neighbor_radius){
                 continue; // Skip self
             }
            
-            float distance = sqrt((neighbor_radius - row)*(neighbor_radius - row) + (neighbor_radius - col)*(neighbor_radius - col)); // ...
+            float distance = sqrt((params.neighbor_radius - row)*(params.neighbor_radius - row) + (params.neighbor_radius - col)*(params.neighbor_radius - col)); // ...
             
-            float disp_prob = neg_expo_discrete(1.0/seed_disp_dist,
+            float disp_prob = neg_expo_discrete(1.0/params.seed_disp_dist,
                                                 distance,
-                                                neighbor_radius);
+                                                params.neighbor_radius);
             
-            std::binomial_distribution<int> seed_rng2(seeds_per_adult, disp_prob);
+            std::binomial_distribution<int> seed_rng2(params.seeds_per_adult, disp_prob);
             
             seed_rng[i] = seed_rng2;
 
@@ -83,19 +83,13 @@ void Neighbors::initSeedRNG(int neighbor_radius,
         
        // std::cout << "\n";
     } // End row loop
-    
-    int test = 0;
-   
-
 }
 
 
 
 
 // Updates neighbor indices in
-void Neighbors::getNeighborIndex(int focal_cell, int height,
-                                 int width, int area,
-                                 int neighbor_radius){
+void Neighbors::getNeighborIndex(int focal_cell, Params& params){
     // col = focal cell % width
     // row = focal cell / width
     // To go from x, y to array index: array_index = row * width + col
@@ -106,6 +100,11 @@ void Neighbors::getNeighborIndex(int focal_cell, int height,
     int NN_index_temp;
     int row;
     int col;
+    
+    int width = params.width;
+    int height = params.height;
+    int neighbor_radius = params.neighbor_radius;
+    
     // Row and col start is the row and col number of the TL neighbor
     int row_start = (focal_cell / width - neighbor_radius);
     int col_start = (focal_cell % width - neighbor_radius);
@@ -145,7 +144,7 @@ void Neighbors::getNeighborIndex(int focal_cell, int height,
             i++; // Increment counter
        
             // Make sure NN is not out of bounds
-                assert(NN_index_temp < area);
+                assert(NN_index_temp < params.area);
                 assert(NN_index_temp >= 0);
         }
         
@@ -157,32 +156,26 @@ void Neighbors::getNeighborIndex(int focal_cell, int height,
 // Update neighbors information
 // Could clean up if we had a Sim class that held sp and gen and information about simulation like height width, area, neighborhood radius etc
 
-void Neighbors::updateNeighbors(int focal_cell, int height,
-                                int width, int area,
-                                int neighbor_radius,
-                                std::vector<int>& sp,
-                                std::vector<int>& gen,
-                                int n_alleles_init,
-                                int n_sp_init){
+void Neighbors::updateNeighbors(int focal_cell, Params& params, Sim& sim){
     
     // Update indices
     // Adds 1d array indices of neighbors to member var nn_index
-    Neighbors::getNeighborIndex(focal_cell, height, width, area, neighbor_radius);
+    Neighbors::getNeighborIndex(focal_cell, params);
     
     // Use indices to update nn_sp and nn_gen
     int i = 0;
     for(auto& iter : nn_index){
         
         // Make sure sp number isn't crazy
-        nn_sp[i] = sp[iter];
-        assert(sp[iter] <= n_sp_init);
+        nn_sp[i] = sim.sp[iter];
+        assert(sim.sp[iter] <= params.n_sp_init);
         
         // Make sure genotype is within range
-        nn_gen[i] = gen[iter];
-        assert(gen[iter] <= n_alleles_init);
+        nn_gen[i] = sim.gen[iter];
+        assert(sim.gen[iter] <= params.n_alleles_init);
         
         // Index for seeds_by_gen array
-        nn_gen_1d_index[i] = sp[iter] * n_alleles_init + gen[iter];
+        nn_gen_1d_index[i] = sim.sp[iter] * params.n_alleles_init + sim.gen[iter];
         i++;
     }
     
@@ -328,16 +321,10 @@ void Neighbors::totalSeeds(){
 // Lottery based on relative frequency in cell
 // Then assigns species and genotype to focal cell
 
-void Neighbors::chooseWinner(std::mt19937& generator,
-                             int focal_cell,
-                             std::vector<int>& sp,
-                             std::vector<int>& gen,
-                             int n_sp_init,
-                             int n_alleles_init){
+void Neighbors::chooseWinner(int focal_cell, Params& params, Sim& sim){
 
     
     // Assign probs based on relative frequency
-
     int i = 0;
     
     for(auto& iter : nn_gen_1d_index){
@@ -357,29 +344,22 @@ void Neighbors::chooseWinner(std::mt19937& generator,
     // Choose species to establish in empty cell
     // Choose a winner / seed to establish based on relative frequency and weighted probability
     boost::random::discrete_distribution<> seed_winner_rng(probabilities.begin(), probabilities.end());
-//    
-//    std::discrete_distribution<float> test{probabilities.begin(), probabilities.end()};
-//    
-//    for(int i = 0; i < 100; i++){
-//        std::cout << seed_winner_rng(generator) << "\n";
-//    }
-//    
     
     
     // Winner index is index of probabilities - which is species x gen
     int winner_index; // Move up and out of loop?
-    winner_index = seed_winner_rng(generator);
+    winner_index = seed_winner_rng(sim.generator);
     
     // Reassign Species ID and genotype for 'winner' then continue looping through empty cells
     
     // Error check
-    assert((winner_index / n_alleles_init) <= n_sp_init);
-    assert((winner_index % n_alleles_init) <= n_alleles_init);
+    assert((winner_index / params.n_alleles_init) <= params.n_sp_init);
+    assert((winner_index % params.n_alleles_init) <= params.n_alleles_init);
     
     // Have to do modulus and division operation in indexing to find species and genotype
     
-    sp[focal_cell]  = winner_index / n_alleles_init;
-    gen[focal_cell] = winner_index % n_alleles_init;
+    sim.sp[focal_cell]  = winner_index / params.n_alleles_init;
+    sim.gen[focal_cell] = winner_index % params.n_alleles_init;
     
 //    // Print winner
 //    std::cout<< "Winner - species: " << nn_sp[winner_index / n_alleles_init] << " \n";
@@ -392,20 +372,20 @@ void Neighbors::chooseWinner(std::mt19937& generator,
 
 // Print status of number of seeds per neighbor
 
-void Neighbors::printStatus(int neighbor_radius, int n_sp_init, int n_alleles_init){
+void Neighbors::printStatus(Params& params){
     
     
-    // Graph of neighbors
+    ////////////////////////
+    // Grid of neighbors
     std::cout << "\n| ----- Neighbors (species.gen) -------- | \n";
     
-    
     int i = 0;
-    for(int row_ctr = 0; row_ctr < (2 * neighbor_radius + 1); row_ctr++){
+    for(int row_ctr = 0; row_ctr < (2 * params.neighbor_radius + 1); row_ctr++){
        
-        for(int col_ctr = 0; col_ctr < (2 * neighbor_radius + 1); col_ctr++){
+        for(int col_ctr = 0; col_ctr < (2 * params.neighbor_radius + 1); col_ctr++){
             
             // For self
-            if(col_ctr == neighbor_radius & row_ctr == neighbor_radius){
+            if(col_ctr == params.neighbor_radius & row_ctr == params.neighbor_radius){
                 std::cout << "-- \t";
                 continue;
             }
@@ -419,6 +399,8 @@ void Neighbors::printStatus(int neighbor_radius, int n_sp_init, int n_alleles_in
         std::cout << "\n";
     } // End neighbor print
     
+    
+    ////////////////////////
     // Seeds by species
     std::cout << "\n| ----- Seeds by species -------- | \n";
     i = 0;
@@ -427,21 +409,23 @@ void Neighbors::printStatus(int neighbor_radius, int n_sp_init, int n_alleles_in
         i++;
     }
     
+    
+    ////////////////////////
     // Seeds by gen
     std::cout << "\n| ----- Seeds by species by gen -------- | \n";
     i = 0;
     
     // Column labels
     std::cout<< "Gen: \t\t";
-    for(int col = 0; col < n_alleles_init; col++){
+    for(int col = 0; col < params.n_alleles_init; col++){
         std::cout << col << " \t";
         }
     std::cout << "\n";
 
-    for(int row = 0; row < n_sp_init; row++){
+    for(int row = 0; row < params.n_sp_init; row++){
         std::cout << "Species " << row << ": \t";
         
-        for(int col = 0; col < n_alleles_init; col++){
+        for(int col = 0; col < params.n_alleles_init; col++){
             std::cout << seeds_by_gen[i] << "\t";
             
             i++;

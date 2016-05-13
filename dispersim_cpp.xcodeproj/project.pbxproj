@@ -12,6 +12,7 @@
 		2F1F53D41CDD34A2003C8283 /* neighbors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F1F53D21CDD34A2003C8283 /* neighbors.cpp */; };
 		2F3A05681CD3DA1900B6E86D /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F3A05661CD3DA1900B6E86D /* utils.cpp */; };
 		2FEB53981CE4D79F00C32946 /* sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2FEB53961CE4D79F00C32946 /* sim.cpp */; };
+		2FEB539B1CE6181B00C32946 /* params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2FEB53991CE6181B00C32946 /* params.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +38,8 @@
 		2F3A05671CD3DA1900B6E86D /* utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 		2FEB53961CE4D79F00C32946 /* sim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sim.cpp; sourceTree = "<group>"; };
 		2FEB53971CE4D79F00C32946 /* sim.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sim.hpp; sourceTree = "<group>"; };
+		2FEB53991CE6181B00C32946 /* params.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = params.cpp; sourceTree = "<group>"; };
+		2FEB539A1CE6181B00C32946 /* params.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = params.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +77,8 @@
 				2F1F53D31CDD34A2003C8283 /* neighbors.hpp */,
 				2FEB53961CE4D79F00C32946 /* sim.cpp */,
 				2FEB53971CE4D79F00C32946 /* sim.hpp */,
+				2FEB53991CE6181B00C32946 /* params.cpp */,
+				2FEB539A1CE6181B00C32946 /* params.hpp */,
 				2F1F53CF1CDCDCBC003C8283 /* summary.cpp */,
 				2F1F53D01CDCDCBC003C8283 /* summary.hpp */,
 				2F3A05661CD3DA1900B6E86D /* utils.cpp */,
@@ -143,6 +148,7 @@
 				2F1F53D41CDD34A2003C8283 /* neighbors.cpp in Sources */,
 				2F1F53D11CDCDCBC003C8283 /* summary.cpp in Sources */,
 				2F1AA31A1CD29194005DA265 /* main.cpp in Sources */,
+				2FEB539B1CE6181B00C32946 /* params.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

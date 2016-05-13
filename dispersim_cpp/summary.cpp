@@ -18,20 +18,19 @@
 
 // Calculate summary statistics when object is created
 
-Summary_step::Summary_step(std::vector<int>& sp, std::vector<int>& gen, int n_sp_init, int step){
+Summary_step::Summary_step(Sim& sim, Params& params, int step){
     
     // Save step
     Summary_step::step = step;
     
     // Species richness
-    Summary_step::calc_sp_richness(sp);
+    Summary_step::calc_sp_richness(sim.sp);
     
     // Allelic richness
-    Summary_step::calc_allelic_richness(n_sp_init, sp, gen);
+    Summary_step::calc_allelic_richness(params.n_sp_init, sim.sp, sim.gen);
     
     // Average allelic richness
     allelic_richness_avg = Summary_step::calc_avg(allelic_richness_by_sp);
-    
     
     // Print results
     Summary_step::print();

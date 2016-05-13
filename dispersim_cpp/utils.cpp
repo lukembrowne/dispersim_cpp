@@ -67,17 +67,14 @@ void write_summary(std::vector<Summary_step>& summary_over_time){
 // Write landscape for both species and genotypes to file
 // Export as tab delimited file
 
-void write_landscape(std::vector<int>& sp,
-                     std::vector<int>& gen,
-                     int height, int width,
-                     std::string species_filename){
+void write_landscape(std::string species_filename, Sim& sim, Params& params){
     
     std::ofstream out_species(species_filename.c_str());
    // std::ofstream out_genotypes("landscape_genotypes.txt");
     
-    for(int row = 0; row < height; row++){
-        for(int col = 0; col < width; col++){
-            out_species << sp[row*width + col] << "\t";
+    for(int row = 0; row < params.height; row++){
+        for(int col = 0; col < params.width; col++){
+            out_species << sim.sp[row * params.width + col] << "\t";
      //       out_genotypes<< gen[i*width + j] << "\t";
 
         } // End column loop

@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <random>
 #include <vector>
+#include "params.hpp"
+#include "sim.hpp"
 
 
 // Create a class that holds information about neighbors around an empty cell
@@ -72,25 +74,16 @@ public:
     float seeds_total;    
 
     //Constructor function
-    Neighbors(int radius, int n_sp_init, int n_alleles_init);
+    Neighbors(Params& params);
     
     //Initialize seed RNGS based on distance
-    void initSeedRNG(int neighbor_radius, int seed_disp_dist,
-                     int seeds_per_adult);
+    void initSeedRNG(Params& params);
     
     // Find 1d indices of neighhbors
-    void getNeighborIndex(int focal_cell, int height,
-                          int width, int area,
-                          int neighbor_radius);
+    void getNeighborIndex(int focal_cell, Params& params);
     
     // Updates nn_sp, nn_gen - calls getNeighborIndex
-    void updateNeighbors(int focal_cell, int height,
-                         int width, int area,
-                         int neighbor_radius,
-                         std::vector<int>& sp,
-                         std::vector<int>& gen,
-                         int n_alleles_init,
-                         int n_sp_init);
+    void updateNeighbors(int focal_cell, Params& params, Sim& sim);
     
     // Generate numeber of seeds contributed by each neighbor
     // Based on distance and neg exponential dispersal kernel
@@ -108,15 +101,10 @@ public:
     void totalSeeds();
     
     // Choose recruit based on relative frequency in cell after GNDD and CNDD
-    void chooseWinner(std::mt19937& generator,
-                      int focal_cell,
-                      std::vector<int>& sp,
-                      std::vector<int>& gen,
-                      int n_sp_init,
-                      int n_alleles_init);
+    void chooseWinner(int focal_cell, Params& params, Sim& sim);
     
     // Print status
-    void printStatus(int neighbor_radius, int n_sp_init, int n_alleles_init);
+    void printStatus(Params& params);
     
     // Reset - set values back to 0
     void reset();
