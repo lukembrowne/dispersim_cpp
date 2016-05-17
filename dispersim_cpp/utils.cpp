@@ -44,23 +44,51 @@ float neg_expo_discrete(float alpha, float dij, int R){
 void write_summary(std::vector<Summary_step>& summary_over_time){
     
     // Start file stream
-    std::ofstream out_summary("summary_over_time_overall.txt");
+    std::ofstream out_summary_overall("./summary_out/summary_overall.txt");
+    std::ofstream out_summary_by_sp("./summary_out/summary_by_sp.txt");
     
     // Set column names
-    out_summary << "step \t sp_richness \t sp_shannon \t allelic_richness_avg \t allelic_shannon_avg\n";
+    out_summary_overall << "step \t sp_richness \t sp_shannon \t allelic_richness_avg \t allelic_shannon_avg\n";
+    
+    out_summary_by_sp << "step \t sp_richness \t sp_shannon \t sp \t abundance \t allelic_richness \t allelic_shannon\n";
+
     
     // Loop through summaries by step
     for(int i = 0; i < summary_over_time.size(); i++){
-        out_summary << summary_over_time[i].step << "\t";
-        out_summary << summary_over_time[i].sp_richness << "\t";
-        out_summary << summary_over_time[i].sp_shannon << "\t";
-        out_summary << summary_over_time[i].allelic_richness_avg << "\t";
-        out_summary << summary_over_time[i].allelic_shannon_avg << "\t";
-        out_summary << "\n"; // End line
-    }
+        
+        
+        // Overall
+        out_summary_overall << summary_over_time[i].step << "\t";
+        out_summary_overall << summary_over_time[i].sp_richness << "\t";
+        out_summary_overall << summary_over_time[i].sp_shannon << "\t";
+        out_summary_overall << summary_over_time[i].allelic_richness_avg << "\t";
+        out_summary_overall << summary_over_time[i].allelic_shannon_avg << "\t";
+        out_summary_overall << "\n"; // End line
+        
+        // By species
+        
+        // Loop over species
+        for(int j = 0; j < summary_over_time[i].allelic_richness_by_sp.size(); j++){
+            
+            out_summary_by_sp << summary_over_time[i].step << "\t";
+            out_summary_by_sp << summary_over_time[i].sp_richness << "\t";
+            out_summary_by_sp << summary_over_time[i].sp_shannon << "\t";
+            out_summary_by_sp << j << "\t"; // Species ID
+            out_summary_by_sp << summary_over_time[i].abundance_by_sp[j] << "\t";
+            out_summary_by_sp << summary_over_time[i].allelic_richness_by_sp[j] << "\t";
+            out_summary_by_sp << summary_over_time[i].allelic_shannon_by_sp[j] << "\t";
+
+            out_summary_by_sp << "\n"; // End line
+
+
+        } // End species loop
+    } // End summary step loop
     
-    out_summary.close();
-    std::cout << "Successfully wrote summary_over_time_overall.txt to file... \n";
+    // Close files
+    out_summary_overall.close();
+    out_summary_by_sp.close();
+    
+    std::cout << "Successfully wrote summaries to file... \n";
 
 }
 

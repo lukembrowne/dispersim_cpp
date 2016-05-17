@@ -18,10 +18,17 @@
 
 // Calculate summary statistics when object is created
 
-Summary_step::Summary_step(Sim& sim, Params& params, int step){
+Summary_step::Summary_step(Sim& sim, Params& params, int step) :
+
+    abundance_by_sp(params.n_sp_init, 0) // Init to 0
+
+{
     
     // Save step
     Summary_step::step = step;
+    
+    // Species abundance
+    Summary_step::calc_sp_abundance(sim, params);
     
     // Species richness
     Summary_step::calc_sp_richness(sim.sp);
@@ -39,6 +46,17 @@ Summary_step::Summary_step(Sim& sim, Params& params, int step){
     
     // Print results
     Summary_step::print();
+    
+}
+
+
+// Abundance
+void Summary_step::calc_sp_abundance(Sim& sim, Params& params){
+    
+    // Loop through SP
+    for(int i = 0; i < sim.sp.size(); i++){
+        abundance_by_sp[sim.sp[i]] += 1;
+    }
     
 }
 
@@ -71,14 +89,14 @@ void Summary_step::calc_sp_shannon(Sim& sim, Params& params){
     
     float shannon{0.0};
     
-    // Loop over species vector
-    for(int i = 0; i < sim.sp.size(); i++){
-        shannon_holder[sim.sp[i]] += 1.0;
-    }
+//    // Loop over species vector
+//    for(int i = 0; i < sim.sp.size(); i++){
+//        shannon_holder[sim.sp[i]] += 1.0;
+//    }
     
     // Divide by total to get relative abundance
     for(int i = 0; i < shannon_holder.size(); i++){
-        shannon_holder[i] = shannon_holder[i] / params.area;
+        shannon_holder[i] = (float)abundance_by_sp[i] / params.area;
         
         // Can't take log of 0.. so skip if 0
         if(shannon_holder[i] == 0) continue;
@@ -128,23 +146,33 @@ void Summary_step::calc_allelic_richness_shannon(Sim& sim,
         /////
         // SHANNON DIVERSITY
         
-        // Loop over allele temp vector
-        for(int i = 0; i < allele_temp.size(); i++){
-            shannon_holder[allele_temp[i]] += 1.0;
-        }
+        // If no alleles .. aka abundance = 0
+        if(allele_temp.size() == 0){
+            shannon = 0;
+        } else {
         
-        // Divide by total to get relative abundance
-        for(int i = 0; i < shannon_holder.size(); i++){
-            shannon_holder[i] = shannon_holder[i] / allele_temp.size();
+            // Loop over allele temp vector
+            for(int k = 0; k < allele_temp.size(); k++){
+                shannon_holder[allele_temp[k]] += 1.0;
+            }
             
-            // Can't take log of 0.. so skip if 0
-            if(shannon_holder[i] == 0) continue;
+            // Divide by total to get relative abundance
+            for(int k = 0; k < shannon_holder.size(); k++){
+                shannon_holder[k] = shannon_holder[k] / allele_temp.size();
+                
+                // Can't take log of 0.. so skip if 0
+                if(shannon_holder[k] == 0) continue;
+                
+                // Then multiple by natural log of that proportion
+                shannon_holder[k] = shannon_holder[k] *
+                                    std::log(shannon_holder[k]);
+                // Sum
+                shannon += shannon_holder[k];
+            }
+        } // End else
+        
+        if(std::isnan(shannon)){
             
-            // Then multiple by natural log of that proportion
-            shannon_holder[i] = shannon_holder[i] *
-                                std::log(shannon_holder[i]);
-            // Sum
-            shannon += shannon_holder[i];
         }
         
         // Multiply by -1 and assign to class object

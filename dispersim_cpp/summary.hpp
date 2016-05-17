@@ -34,10 +34,14 @@ public:
     std::vector<float> allelic_shannon_by_sp; // Shannon diversity
     float allelic_shannon_avg;
     
+    // Abundance by sp
+    std::vector<int> abundance_by_sp;
+    
     //Constructor function
     Summary_step(Sim& sim, Params& params, int step);
     
     // Member functions
+    void calc_sp_abundance(Sim& sim, Params& params);
     void calc_sp_richness(std::vector<int>& sp);
     void calc_sp_shannon(Sim& sim, Params& params);
     void calc_allelic_richness_shannon(Sim& sim, Params& params);

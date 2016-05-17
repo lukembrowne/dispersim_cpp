@@ -12,6 +12,7 @@
 #include <map>
 #include <boost/random/discrete_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
+#include <boost/filesystem.hpp>
 #include "utils.hpp"
 #include "summary.hpp"
 #include "neighbors.hpp"
@@ -37,8 +38,14 @@ int main(int argc, const char * argv[]) {
     
     // Initialize Neighbors object
     Neighbors neighbors(params);
-
     
+    
+    // Initialize directories
+    boost::filesystem::remove_all("./landscape_out");
+    boost::filesystem::create_directories("./landscape_out");
+    
+    boost::filesystem::remove_all("./summary_out");
+    boost::filesystem::create_directories("./summary_out");
 
 ////////////////////////
 ////////////////////////
@@ -133,7 +140,7 @@ int main(int argc, const char * argv[]) {
             
             
             // Write landscape of species to tab delimited .txt file
-            std::string species_filename = "landscape_species_step_";
+            std::string species_filename = "./landscape_out/landscape_species_step_";
             std::string suffix = ".txt";
             
             // Write to buffer to add leading 0s
@@ -151,11 +158,11 @@ int main(int argc, const char * argv[]) {
     // Writing things to file
     
     // Write landscape of species to tab delimited .txt file
-   std::string species_filename = "landscape_species_FINAL.txt";
+   std::string species_filename = "./landscape_out/landscape_species_FINAL.txt";
    write_landscape(species_filename, sim, params);
 
     
-    // Write summary to file
+    // Write summary overall and summary by sp to file
     write_summary(summary_over_time);
 
     

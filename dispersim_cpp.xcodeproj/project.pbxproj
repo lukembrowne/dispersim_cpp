@@ -10,6 +10,8 @@
 		2F1AA31A1CD29194005DA265 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F1AA3191CD29194005DA265 /* main.cpp */; };
 		2F1F53D11CDCDCBC003C8283 /* summary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F1F53CF1CDCDCBC003C8283 /* summary.cpp */; };
 		2F1F53D41CDD34A2003C8283 /* neighbors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F1F53D21CDD34A2003C8283 /* neighbors.cpp */; };
+		2F2ACEC01CEB68FD00E93F69 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F2ACEBF1CEB68FD00E93F69 /* libboost_filesystem.a */; };
+		2F2ACEC21CEB691700E93F69 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F2ACEC11CEB691700E93F69 /* libboost_system.a */; };
 		2F3A05681CD3DA1900B6E86D /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F3A05661CD3DA1900B6E86D /* utils.cpp */; };
 		2FEB53981CE4D79F00C32946 /* sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2FEB53961CE4D79F00C32946 /* sim.cpp */; };
 		2FEB539B1CE6181B00C32946 /* params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2FEB53991CE6181B00C32946 /* params.cpp */; };
@@ -34,6 +36,8 @@
 		2F1F53D01CDCDCBC003C8283 /* summary.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = summary.hpp; sourceTree = "<group>"; };
 		2F1F53D21CDD34A2003C8283 /* neighbors.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = neighbors.cpp; sourceTree = "<group>"; };
 		2F1F53D31CDD34A2003C8283 /* neighbors.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = neighbors.hpp; sourceTree = "<group>"; };
+		2F2ACEBF1CEB68FD00E93F69 /* libboost_filesystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_filesystem.a; path = ../../../../usr/local/Cellar/boost/1.60.0_2/lib/libboost_filesystem.a; sourceTree = "<group>"; };
+		2F2ACEC11CEB691700E93F69 /* libboost_system.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_system.a; path = ../../../../usr/local/Cellar/boost/1.60.0_2/lib/libboost_system.a; sourceTree = "<group>"; };
 		2F3A05661CD3DA1900B6E86D /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		2F3A05671CD3DA1900B6E86D /* utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 		2FEB53961CE4D79F00C32946 /* sim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sim.cpp; sourceTree = "<group>"; };
@@ -47,6 +51,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F2ACEC01CEB68FD00E93F69 /* libboost_filesystem.a in Frameworks */,
+				2F2ACEC21CEB691700E93F69 /* libboost_system.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,6 +62,8 @@
 		2F1AA30D1CD29194005DA265 = {
 			isa = PBXGroup;
 			children = (
+				2F2ACEC11CEB691700E93F69 /* libboost_system.a */,
+				2F2ACEBF1CEB68FD00E93F69 /* libboost_filesystem.a */,
 				2F1AA3181CD29194005DA265 /* dispersim_cpp */,
 				2F1AA3171CD29194005DA265 /* Products */,
 			);
@@ -238,7 +246,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/include;
-				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/lib;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -247,7 +256,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/include;
-				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.60.0_2/lib;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
