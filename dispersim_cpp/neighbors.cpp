@@ -38,6 +38,9 @@ Neighbors::Neighbors(Params& params){
     probabilities.resize(params.n_sp_init * params.n_alleles_init);
     
     seeds_total = {0.0};
+    
+    // Initialize seed RNGS
+    initSeedRNG(params);
 
 }
 

@@ -47,13 +47,15 @@ void write_summary(std::vector<Summary_step>& summary_over_time){
     std::ofstream out_summary("summary_over_time_overall.txt");
     
     // Set column names
-    out_summary << "step \t sp_richness \t allelic_richness_avg \n";
+    out_summary << "step \t sp_richness \t sp_shannon \t allelic_richness_avg \t allelic_shannon_avg\n";
     
     // Loop through summaries by step
     for(int i = 0; i < summary_over_time.size(); i++){
         out_summary << summary_over_time[i].step << "\t";
         out_summary << summary_over_time[i].sp_richness << "\t";
+        out_summary << summary_over_time[i].sp_shannon << "\t";
         out_summary << summary_over_time[i].allelic_richness_avg << "\t";
+        out_summary << summary_over_time[i].allelic_shannon_avg << "\t";
         out_summary << "\n"; // End line
     }
     

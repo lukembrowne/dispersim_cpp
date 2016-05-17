@@ -22,12 +22,12 @@ save_every_n_steps{25},
 verbose{false},
 
 // Number of generations
-steps{300}, // Each step = 5-10 years with 0.10 % mortality rate
+steps{100}, // Each step = 5-10 years with 0.10 % mortality rate
 mortality_rate{0.25}, // Proportion of landscape dying per step
 
 // Species parameters
-n_sp_init{50},
-n_alleles_init{2},
+n_sp_init{10},
+n_alleles_init{10},
 seed_disp_dist{1}, // In units of cells
 neighbor_radius{3}, // Miranda = 5; Banitz = 20
 
@@ -42,8 +42,8 @@ min_gndd{1.0}, // Min must be greater numerically than max, but means weaker NDD
 
 
 // Landscape parameters
-width{200},
-height{200},
+width{100},
+height{100},
 area{width * height},
 
 migration_rate{0.0001}, // Immigrant per recruit (~1 in 10,000) is from BCI paper; 1 in 9000 used in Muller Landau 2007

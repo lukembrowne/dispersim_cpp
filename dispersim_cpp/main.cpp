@@ -21,7 +21,6 @@
 #include <sstream>
 
 
-
 /// MAIN
 
 int main(int argc, const char * argv[]) {
@@ -36,11 +35,9 @@ int main(int argc, const char * argv[]) {
     // Initialize vector of summary object
     std::vector<Summary_step> summary_over_time;
     
-    
     // Initialize Neighbors object
     Neighbors neighbors(params);
-    
-    neighbors.initSeedRNG(params);
+
     
 
 ////////////////////////
@@ -61,10 +58,13 @@ int main(int argc, const char * argv[]) {
             sim.empty_cell_indices[i] = sim.cell_rng(sim.generator);
         }
         
-        // Loop through empty cells and assign new species
- 
+        
+        
+        // Loop through empty cells
         for(auto& empty_cell_iter : sim.empty_cell_indices){
 
+            
+            /////////////
             // MIGRATION -
             
             if(sim.migration_rng(sim.generator) <= params.migration_rate){
@@ -76,8 +76,11 @@ int main(int argc, const char * argv[]) {
             
                 
                 continue; // Jump to next empty cell
-            }
+                
+            } // End migration if
+           
             
+            /////////////////
             // GLOBAL DISPERAL
             // Need to change so that some proportion of adults contribute seedlings, but these are still evaluated for NDD effects.. just that dispersal is not limited by proximity - randomly choose 8 adults to contribute seeds
             
@@ -89,7 +92,7 @@ int main(int argc, const char * argv[]) {
                 }
         
             
-            
+            /////////////////
             // LOCAL DISPERSAL
             if(params.dispersal_mode == 0){
 
@@ -104,9 +107,6 @@ int main(int argc, const char * argv[]) {
                 
                 // GNDD process
                 neighbors.GNDD(sim.gndd_sp);
-                
-                // Print
-//                neighbors.printStatus(neighbor_radius, n_sp_init, n_alleles_init);
 
                 // CNDD process
                 neighbors.CNDD(sim.cndd_sp);
@@ -126,7 +126,6 @@ int main(int argc, const char * argv[]) {
         
 
         if(step % params.save_every_n_steps == 0 | step == 1 ){
-           // std::cout << "Step:" << step << " | " << calcSpeciesRichness(sp) ;
             
             Summary_step summary(sim, params, step);
             
@@ -144,8 +143,6 @@ int main(int argc, const char * argv[]) {
         
             write_landscape(buffer.str(), sim, params);
             
-            
-     
         }
                        
     } // End step loop
@@ -159,7 +156,6 @@ int main(int argc, const char * argv[]) {
 
     
     // Write summary to file
-    
     write_summary(summary_over_time);
 
     

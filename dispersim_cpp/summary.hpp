@@ -26,19 +26,23 @@ public:
     
     // Species diversity
     int sp_richness;
+    float sp_shannon;
     
     // Genetic diversity
-    std::vector<int> allelic_richness_by_sp;
+    std::vector<int> allelic_richness_by_sp; // Richness
     float allelic_richness_avg;
+    std::vector<float> allelic_shannon_by_sp; // Shannon diversity
+    float allelic_shannon_avg;
     
     //Constructor function
     Summary_step(Sim& sim, Params& params, int step);
     
     // Member functions
     void calc_sp_richness(std::vector<int>& sp);
-    void calc_allelic_richness(int n_sp_init, std::vector<int>& sp,
-                               std::vector<int>& gen);
-    float calc_avg(std::vector<int> metric); // Maybe need to overload another for float?
+    void calc_sp_shannon(Sim& sim, Params& params);
+    void calc_allelic_richness_shannon(Sim& sim, Params& params);
+    float calc_avg(std::vector<int> metric);
+    float calc_avg(std::vector<float> metric); // Overloaded for float
     void print(); // Print to console
 };
 
