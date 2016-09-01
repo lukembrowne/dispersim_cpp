@@ -30,6 +30,10 @@ int main(int argc, const char * argv[]) {
     // Initialize parameter list
     Params params;
     
+    // Write params list to file
+    std::string params_filename = "./params_out.txt";
+    write_params(params_filename, params);
+    
     // Initialize Simulation
     Sim sim(params);
 
@@ -132,6 +136,7 @@ int main(int argc, const char * argv[]) {
         } // End local dispersal if
         
 
+        // Saving summaries
         if(step % params.save_every_n_steps == 0 | step == 1 ){
             
             Summary_step summary(sim, params, step);
@@ -153,9 +158,6 @@ int main(int argc, const char * argv[]) {
         }
                        
     } // End step loop
-
-    
-    // Writing things to file
     
     // Write landscape of species to tab delimited .txt file
    std::string species_filename = "./landscape_out/landscape_species_FINAL.txt";

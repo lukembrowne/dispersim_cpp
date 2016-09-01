@@ -121,3 +121,46 @@ void write_landscape(std::string species_filename, Sim& sim, Params& params){
     
 }
 
+
+// Write parameter values to file
+// Export as tab delimited file
+// 2 columns - one with parameter name, one with value
+
+void write_params(std::string params_filename, Params& params){
+    
+    std::ofstream out_params(params_filename.c_str());
+
+    // Set up column wrow
+    out_params << "param \t value \n";
+    
+    out_params << "steps \t" << params.steps << "\n";
+    out_params << "mortality_rate \t" << params.mortality_rate << "\n";
+    out_params << "n_sp_init \t" << params.n_sp_init << "\n";
+    out_params << "n_alleles_init \t" << params.n_alleles_init << "\n";
+    out_params << "seed_disp_dist \t" << params.seed_disp_dist << "\n";
+    out_params << "neighbor_radius \t" << params.neighbor_radius << "\n";
+    out_params << "seeds_per_adult \t" << params.seeds_per_adult<< "\n";
+    
+    out_params << "max_cndd \t" << params.max_cndd << "\n";
+    out_params << "min_cndd \t" << params.min_cndd << "\n";
+    out_params << "max_gndd \t" << params.max_gndd << "\n";
+    out_params << "min_gndd \t" << params.min_gndd << "\n";
+    
+    out_params << "width \t" << params.width << "\n";
+    out_params << "height \t" << params.height << "\n";
+    out_params << "area \t" << params.area << "\n";
+    
+    out_params << "migration_rate \t" << params.migration_rate << "\n";
+    
+    out_params << "dispersal_mode \t" << params.dispersal_mode << "\n";
+    
+    out_params << "n_dead_per_step \t" << params.n_dead_per_step << "\n";
+    
+    // Close out file
+    out_params.close();
+
+    
+    std::cout << "Successfully wrote " << params_filename << " to file... \n";
+    
+}
+

@@ -20,5 +20,7 @@ void write_landscape(std::string species_filename, Sim& sim, Params& params);
 
 void write_summary(std::vector<Summary_step>& summary_over_time);
 
+void write_params(std::string params_filename, Params& params);
+
 
 #endif /* utils_hpp */

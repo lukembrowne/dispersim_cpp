@@ -18,11 +18,11 @@
 
 // Lagniappe parameters
 Params::Params() :
-save_every_n_steps{50},
+save_every_n_steps{5},
 verbose{false},
 
 // Number of generations
-steps{300}, // Each step = 5-10 years with 0.10 % mortality rate
+steps{50}, // Each step = 5-10 years with 0.10 % mortality rate
 mortality_rate{0.25}, // Proportion of landscape dying per step
 
 // Species parameters

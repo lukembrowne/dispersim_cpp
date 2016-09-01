@@ -157,7 +157,6 @@ void Neighbors::getNeighborIndex(int focal_cell, Params& params){
 
 
 // Update neighbors information
-// Could clean up if we had a Sim class that held sp and gen and information about simulation like height width, area, neighborhood radius etc
 
 void Neighbors::updateNeighbors(int focal_cell, Params& params, Sim& sim){
     
