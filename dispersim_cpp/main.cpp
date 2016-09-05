@@ -26,6 +26,14 @@
 
 int main(int argc, const char * argv[]) {
 
+    // Testing command line arguments
+//     std::cout << argc << "\n";
+//    for (int count=0; count < argc; ++count) {
+//        std::cout << count << " " << argv[count] << '\n';
+//
+//    }
+//    
+//    return 0;
 
     // Initialize parameter list
     Params params;
@@ -34,8 +42,15 @@ int main(int argc, const char * argv[]) {
     std::string params_filename = "./params_out.txt";
     write_params(params_filename, params);
     
+    // Calculate number of dead individuals per step
+    // Can't do this within Params.hpp w/o getting compiler errors
+    // "cannot appear in a constant-expression"
+    int n_dead_per_step = params.mortality_rate * params.area;
+    
+
+    
     // Initialize Simulation
-    Sim sim(params);
+    Sim sim(params, n_dead_per_step);
 
     // Initialize vector of summary object
     std::vector<Summary_step> summary_over_time;
@@ -50,7 +65,8 @@ int main(int argc, const char * argv[]) {
     
     boost::filesystem::remove_all("./summary_out");
     boost::filesystem::create_directories("./summary_out");
-
+    
+ 
 ////////////////////////
 ////////////////////////
     

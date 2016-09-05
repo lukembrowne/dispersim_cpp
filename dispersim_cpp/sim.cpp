@@ -15,7 +15,7 @@
 
 
 
-Sim::Sim(Params& params) :
+Sim::Sim(Params& params, int n_dead_per_step) :
 
 // INIT RNGS
 
@@ -40,7 +40,7 @@ gen_rng(0, (params.n_alleles_init-1))
 {
     
     // Stores index for cells that die each step
-    empty_cell_indices.resize(params.n_dead_per_step);
+    empty_cell_indices.resize(n_dead_per_step);
     
     
     // Initialize species vector and place species randomly throughout landscape

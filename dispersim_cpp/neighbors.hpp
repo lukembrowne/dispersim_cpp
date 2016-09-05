@@ -67,7 +67,7 @@ public:
     std::vector<bool> nn_gen_1d_index_dupe; // TRUE if is a duplicate
     std::vector<float> probabilities; // Recruitment probabilities
     
-    std::vector<std::binomial_distribution<int>> seed_rng;
+    std::vector<std::binomial_distribution<int> > seed_rng;
     std::vector<float> seeds_by_sp; // Initialize to 0
     std::vector<float> dead_seeds_sp;
     std::vector<float> seeds_by_gen;

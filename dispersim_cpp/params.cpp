@@ -48,8 +48,6 @@ area{width * height},
 
 migration_rate{0.0001}, // Immigrant per recruit (~1 in 10,000) is from BCI paper; 1 in 9000 used in Muller Landau 2007
 
-dispersal_mode{0},// 1 == global; 0 == local
-
-n_dead_per_step{(int)(mortality_rate * area)}
+dispersal_mode{0}// 1 == global; 0 == local
 
 {}

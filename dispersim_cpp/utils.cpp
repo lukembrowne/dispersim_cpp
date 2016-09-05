@@ -154,8 +154,6 @@ void write_params(std::string params_filename, Params& params){
     
     out_params << "dispersal_mode \t" << params.dispersal_mode << "\n";
     
-    out_params << "n_dead_per_step \t" << params.n_dead_per_step << "\n";
-    
     // Close out file
     out_params.close();
 

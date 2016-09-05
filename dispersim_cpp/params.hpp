@@ -51,8 +51,6 @@ public:
     float migration_rate; // Immigrant per recruit (~1 in 10,000) is from BCI paper; 1 in 9000 used in Muller Landau 2007
 
     int dispersal_mode ; // 1 == global; 0 == local
-
-    int n_dead_per_step = mortality_rate * area;
         
     Params();
 

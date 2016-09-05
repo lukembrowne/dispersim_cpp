@@ -23,7 +23,7 @@ class Sim {
 public:
     
     // Constructor function
-    Sim(Params& params);
+    Sim(Params& params, int n_dead_per_step);
     
     
     // Member variables
