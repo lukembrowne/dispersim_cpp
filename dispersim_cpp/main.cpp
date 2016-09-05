@@ -24,19 +24,36 @@
 
 /// MAIN
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char *argv[]) {
 
-    // Testing command line arguments
-//     std::cout << argc << "\n";
-//    for (int count=0; count < argc; ++count) {
-//        std::cout << count << " " << argv[count] << '\n';
-//
-//    }
-//    
-//    return 0;
+    // Parsing command line arguments
+    
+    // If no arguments, exit
+    if(argc == 1)
+    {
+        std::cout << "No parameter values given. Exiting program... \n";
+        exit(1);
+    }
+    
+    // If incorrect number of parameters, exit
+    if(argc != 18)
+    {
+        std::cout << "Incorrect number of parameters given.. Should be 17.. try again. \n";
+        exit(1);
+    }
+    
+    
+    // Print out command line arguments
+     std::cout << argc << "\n";
+    for (int count=0; count < argc; ++count) {
+        std::cout << count << " " << argv[count] << '\n';
 
-    // Initialize parameter list
-    Params params;
+    }
+    
+
+    // Initialize parameter list - pass command line arguments
+    Params params(argv);
+    
     
     // Write params list to file
     std::string params_filename = "./params_out.txt";

@@ -52,7 +52,7 @@ public:
 
     int dispersal_mode ; // 1 == global; 0 == local
         
-    Params();
+    Params(const char * argv[]);
 
 };
 
