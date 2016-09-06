@@ -32,7 +32,17 @@ Params::Params(const char *argv[]) {
     
     
     // 2 - Whether printing is verbose or not
-        verbose = argv[2];
+    
+    int verbose_temp = 2;
+    std::stringstream convert2(argv[2]);
+    convert2 >> verbose_temp;
+    
+    if(verbose_temp == 1){
+        verbose =  true;
+    } else {
+        verbose = false;
+    }
+    
     
     
     // 3 -  Number of steps
@@ -93,10 +103,10 @@ Params::Params(const char *argv[]) {
     
         // Min must be greater numerically than max, but means weaker NDD
         std::stringstream convert12(argv[12]);
-        convert12 >> max_cndd;
+        convert12 >> max_gndd;
         
         std::stringstream convert13(argv[13]);
-        convert13 >> min_cndd;
+        convert13 >> min_gndd;
 
     
     // 14, 15  - Landscape parameters - height, width, area
