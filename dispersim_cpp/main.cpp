@@ -123,51 +123,34 @@ int main(int argc, const char *argv[]) {
                 
             } // End migration if
            
-            
-            /////////////////
-            // GLOBAL DISPERAL
-            // Need to change so that some proportion of adults contribute seedlings, but these are still evaluated for NDD effects.. just that dispersal is not limited by proximity - randomly choose 8 adults to contribute seeds
-            
-                // Assigns species to empty cell based on relative frequency in population
-                // May need to exclude dead trees from being chosen..
-                if(params.dispersal_mode == 1){
-                    sim.sp[empty_cell_iter] = sim.sp[sim.cell_rng(sim.generator)]; // Random species
-                    continue;
-                }
-        
-            
-            /////////////////
-            // LOCAL DISPERSAL
-            if(params.dispersal_mode == 0){
 
-                // Reset neighbors object
-                neighbors.reset();
-                
-                // Find neighbors
-                neighbors.updateNeighbors(empty_cell_iter, params, sim);
-       
-                // Disperse seeds into cell
-                neighbors.disperseSeeds(sim.generator);
-                
-                // GNDD process
-                neighbors.GNDD(sim.gndd_sp);
-
-                // CNDD process
-                neighbors.CNDD(sim.cndd_sp);
-                
-                // Print
-               if(params.verbose) neighbors.printStatus(params);
-                
-                // Count up seeds
-                neighbors.totalSeeds();
-                
-                // Choose winner and assign to cell
-                neighbors.chooseWinner(empty_cell_iter, params, sim);
-         
-            } // End looping over empty cells
+            // Reset neighbors object
+            neighbors.reset();
             
-        } // End local dispersal if
-        
+            // Find neighbors
+            // Distinction b/w Local and Global dispersal happens within this function
+            neighbors.updateNeighbors(empty_cell_iter, params, sim);
+
+            // Disperse seeds into cell
+            neighbors.disperseSeeds(sim.generator);
+            
+            // GNDD process
+            neighbors.GNDD(sim.gndd_sp);
+
+            // CNDD process
+            neighbors.CNDD(sim.cndd_sp);
+            
+            // Print
+           if(params.verbose) neighbors.printStatus(params);
+            
+            // Count up seeds
+            neighbors.totalSeeds();
+            
+            // Choose winner and assign to cell
+            neighbors.chooseWinner(empty_cell_iter, params, sim);
+     
+        } // End looping over empty cells
+
 
         // Saving summaries
         if(step % params.save_every_n_steps == 0 | step == 1 ){

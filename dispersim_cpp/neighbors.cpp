@@ -162,7 +162,22 @@ void Neighbors::updateNeighbors(int focal_cell, Params& params, Sim& sim){
     
     // Update indices
     // Adds 1d array indices of neighbors to member var nn_index
-    Neighbors::getNeighborIndex(focal_cell, params);
+    
+    /////////////////
+    // LOCAL DISPERSAL
+    if(params.dispersal_mode == 0){
+        Neighbors::getNeighborIndex(focal_cell, params);
+    }
+    
+    /////////////////
+    // GLOBAL DISPERAL
+    // Will assign random 'neighbors' from anywhere on landscape, regardless of distance
+    if(params.dispersal_mode == 1){
+        for(auto& iter : nn_index){
+            // Assign 'neighbor indices' from random cells on landscape
+            iter = sim.cell_rng(sim.generator);
+        }
+    }
     
     // Use indices to update nn_sp and nn_gen
     int i = 0;
