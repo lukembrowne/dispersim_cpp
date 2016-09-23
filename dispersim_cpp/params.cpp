@@ -92,21 +92,22 @@ Params::Params(const char *argv[]) {
     
     // 10, 11 - CNDD parameters
 
-        // Min must be greater numerically than max, but means weaker NDD
+        // Values closer to 1 = weaker NDD
+    
         std::stringstream convert10(argv[10]);
-        convert10 >> max_cndd;
+        convert10 >> mean_cndd;
     
         std::stringstream convert11(argv[11]);
-        convert11 >> min_cndd;
+        convert11 >> range_cndd;
     
     // 12, 13 - GNDD parameters
     
         // Min must be greater numerically than max, but means weaker NDD
         std::stringstream convert12(argv[12]);
-        convert12 >> max_gndd;
+        convert12 >> mean_gndd;
         
         std::stringstream convert13(argv[13]);
-        convert13 >> min_gndd;
+        convert13 >> range_gndd;
 
     
     // 14, 15  - Landscape parameters - height, width, area

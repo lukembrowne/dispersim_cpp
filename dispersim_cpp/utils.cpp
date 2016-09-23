@@ -141,10 +141,10 @@ void write_params(std::string params_filename, Params& params){
     out_params << "neighbor_radius \t" << params.neighbor_radius << "\n";
     out_params << "seeds_per_adult \t" << params.seeds_per_adult<< "\n";
     
-    out_params << "max_cndd \t" << params.max_cndd << "\n";
-    out_params << "min_cndd \t" << params.min_cndd << "\n";
-    out_params << "max_gndd \t" << params.max_gndd << "\n";
-    out_params << "min_gndd \t" << params.min_gndd << "\n";
+    out_params << "mean_cndd \t" << params.mean_cndd << "\n";
+    out_params << "range_cndd \t" << params.range_cndd << "\n";
+    out_params << "mean_gndd \t" << params.mean_gndd << "\n";
+    out_params << "range_gndd \t" << params.range_gndd << "\n";
     
     out_params << "width \t" << params.width << "\n";
     out_params << "height \t" << params.height << "\n";

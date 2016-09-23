@@ -36,11 +36,11 @@ public:
     int seeds_per_adult; // Equal to fecundity..
 
     // NDD parameters
-    float max_cndd;
-    float min_cndd; // Min must be greater numerically than max, but means weaker NDD
+    float mean_cndd; // Closer to 1 = weaker NDD
+    float range_cndd;
 
-    float max_gndd;
-    float min_gndd; // Min must be greater numerically than max, but means weaker NDD
+    float mean_gndd; // Closer to 1 = weaker NDD
+    float range_gndd;
 
 
     // Landscape parameters
