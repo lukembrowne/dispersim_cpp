@@ -56,8 +56,14 @@ int main(int argc, const char *argv[]) {
     
     
     // Write params list to file
-    std::string params_filename = "./params_out.txt";
-    write_params(params_filename, params);
+    boost::filesystem::create_directories("./params_out");
+
+    std::stringstream param_buffer;
+    
+    param_buffer << "./params_out/params_out_sim_" << std::setw(3) << std::setfill('0') << params.sim_id << ".txt";
+
+
+    write_params(param_buffer.str(), params);
     
     // Calculate number of dead individuals per step
     // Can't do this within Params.hpp w/o getting compiler errors
