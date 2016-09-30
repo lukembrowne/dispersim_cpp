@@ -102,7 +102,8 @@ Params::Params(const char *argv[]) {
     
     // 12, 13 - GNDD parameters
     
-        // Min must be greater numerically than max, but means weaker NDD
+        // Values closer to 1 = weaker NDD
+    
         std::stringstream convert12(argv[12]);
         convert12 >> mean_gndd;
         
@@ -130,4 +131,9 @@ Params::Params(const char *argv[]) {
     
         std::stringstream convert17(argv[17]);
         convert17 >> dispersal_mode;
+    
+    // 18 - sim_id - Unique ID for this simulation
+    std::stringstream convert18(argv[18]);
+    convert18 >> sim_id;
+    
 }

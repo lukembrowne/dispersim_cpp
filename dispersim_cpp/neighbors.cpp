@@ -79,13 +79,14 @@ void Neighbors::initSeedRNG(Params& params){
             
             seed_rng[i] = seed_rng2;
 
-          //  std::cout << disp_prob << "\t";
+           // std::cout << disp_prob << "\t";
             i++; // Increment count
             
         } // End col loop
         
        // std::cout << "\n";
     } // End row loop
+    
 }
 
 
@@ -319,6 +320,10 @@ void Neighbors::CNDD(std::vector<float>& cndd_sp){
 
     }
 } // End function
+
+
+
+
 
 ////
 // Count the total number of seeds in the cell

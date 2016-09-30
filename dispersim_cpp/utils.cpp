@@ -12,6 +12,8 @@
 #include <iostream>
 #include <fstream>
 #include "summary.hpp"
+#include <sstream>
+#include <iomanip>
 
 
 // Returns probability of dispersal for negative exponential, discretized
@@ -38,19 +40,39 @@ float neg_expo_discrete(float alpha, float dij, int R){
     
 }
 
+
+
+
+
 // Write summary stats to file
 // Accepts a vector of summary objects and writes them to file
 
-void write_summary(std::vector<Summary_step>& summary_over_time){
+void write_summary(std::vector<Summary_step>& summary_over_time, Params& params){
     
     // Start file stream
-    std::ofstream out_summary_overall("./summary_out/summary_overall.txt");
-    std::ofstream out_summary_by_sp("./summary_out/summary_by_sp.txt");
+    
+    // Set file names
+    // Write landscape of species to tab delimited .txt file
+    std::string summary_overall_filename = "./summary_out/summary_overall_";
+    std::string summary_overall_sp_filename = "./summary_out/summary_by_sp_";
+    std::string suffix = ".txt";
+    
+    // Write to buffer to add leading 0s
+    std::stringstream overall_buffer;
+    std::stringstream overall_by_sp_buffer;
+    
+    // Adding sim_id and step number to file name, setw and setfill add leading for sorting
+    overall_buffer << summary_overall_filename << "sim_" << std::setw(3) << std::setfill('0') << params.sim_id << suffix;
+    overall_by_sp_buffer << summary_overall_sp_filename << "sim_" << std::setw(3) << std::setfill('0') << params.sim_id << suffix;
+
+    
+    std::ofstream out_summary_overall(overall_buffer.str().c_str());
+    std::ofstream out_summary_by_sp(overall_by_sp_buffer.str().c_str());
     
     // Set column names
-    out_summary_overall << "step \t sp_richness \t sp_shannon \t allelic_richness_avg \t allelic_shannon_avg\n";
+    out_summary_overall << "sim_id \t step \t sp_richness \t sp_shannon \t allelic_richness_avg \t allelic_shannon_avg\n";
     
-    out_summary_by_sp << "step \t sp_richness \t sp_shannon \t sp \t abundance \t allelic_richness \t allelic_shannon\n";
+    out_summary_by_sp << "sim_id \t step \t sp_richness \t sp_shannon \t sp \t abundance \t allelic_richness \t allelic_shannon\n";
 
     
     // Loop through summaries by step
@@ -58,6 +80,7 @@ void write_summary(std::vector<Summary_step>& summary_over_time){
         
         
         // Overall
+        out_summary_overall << params.sim_id << "\t";
         out_summary_overall << summary_over_time[i].step << "\t";
         out_summary_overall << summary_over_time[i].sp_richness << "\t";
         out_summary_overall << summary_over_time[i].sp_shannon << "\t";
@@ -70,6 +93,7 @@ void write_summary(std::vector<Summary_step>& summary_over_time){
         // Loop over species
         for(int j = 0; j < summary_over_time[i].allelic_richness_by_sp.size(); j++){
             
+            out_summary_by_sp << params.sim_id << "\t";
             out_summary_by_sp << summary_over_time[i].step << "\t";
             out_summary_by_sp << summary_over_time[i].sp_richness << "\t";
             out_summary_by_sp << summary_over_time[i].sp_shannon << "\t";
@@ -133,6 +157,7 @@ void write_params(std::string params_filename, Params& params){
     // Set up column wrow
     out_params << "param \t value \n";
     
+    out_params << "sim_id \t" << params.sim_id << "\n";
     out_params << "steps \t" << params.steps << "\n";
     out_params << "mortality_rate \t" << params.mortality_rate << "\n";
     out_params << "n_sp_init \t" << params.n_sp_init << "\n";

@@ -36,9 +36,9 @@ int main(int argc, const char *argv[]) {
     }
     
     // If incorrect number of parameters, exit
-    if(argc != 18)
+    if(argc != 19)
     {
-        std::cout << "Incorrect number of parameters given.. Should be 17.. try again. \n";
+        std::cout << "Incorrect number of parameters given.. Should be 18.. try again. \n";
         exit(1);
     }
     
@@ -77,10 +77,10 @@ int main(int argc, const char *argv[]) {
     
     
     // Initialize directories
-    boost::filesystem::remove_all("./landscape_out");
+    //boost::filesystem::remove_all("./landscape_out"); // This would erase the folder
     boost::filesystem::create_directories("./landscape_out");
     
-    boost::filesystem::remove_all("./summary_out");
+    //boost::filesystem::remove_all("./summary_out"); // This would erase the folder
     boost::filesystem::create_directories("./summary_out");
     
  
@@ -161,13 +161,14 @@ int main(int argc, const char *argv[]) {
             
             
             // Write landscape of species to tab delimited .txt file
-            std::string species_filename = "./landscape_out/landscape_species_step_";
+            std::string species_filename = "./landscape_out/landscape_species_";
             std::string suffix = ".txt";
             
             // Write to buffer to add leading 0s
             std::stringstream buffer;
             
-            buffer << species_filename <<  std::setw(3) << std::setfill('0') << step << suffix;
+            // Adding sim_id and step number to file name, setw and setfill add leading for sorting
+            buffer << species_filename << "sim_" << std::setw(3) << std::setfill('0') << params.sim_id << "_step_" << std::setw(3) << std::setfill('0') << step << suffix;
         
             write_landscape(buffer.str(), sim, params);
             
@@ -176,12 +177,20 @@ int main(int argc, const char *argv[]) {
     } // End step loop
     
     // Write landscape of species to tab delimited .txt file
-   std::string species_filename = "./landscape_out/landscape_species_FINAL.txt";
-   write_landscape(species_filename, sim, params);
+    std::string species_filename = "./landscape_out/landscape_species_";
+    std::string suffix = "_FINAL.txt";
+    
+    // Write to buffer to add leading 0s
+    std::stringstream buffer;
+    
+    // Adding sim_id and step number to file name, setw and setfill add leading for sorting
+    buffer << species_filename << "sim_" << std::setw(3) << std::setfill('0') << params.sim_id << suffix;
+    
+   write_landscape(buffer.str(), sim, params);
 
     
     // Write summary overall and summary by sp to file
-    write_summary(summary_over_time);
+    write_summary(summary_over_time, params);
 
     
     return 0;

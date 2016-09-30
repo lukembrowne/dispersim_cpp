@@ -64,6 +64,7 @@ gen_rng(0, (params.n_alleles_init-1))
     // Lower species id == Stronger NDD
     cndd_sp.resize(params.n_sp_init);
     
+        // Will divide by 0 here if only one species
         float cndd_increment = params.range_cndd/((float)params.n_sp_init - 1.0);
         int i = 0;
     
@@ -84,6 +85,7 @@ gen_rng(0, (params.n_alleles_init-1))
     // Lower species id == Stronger NDD
     gndd_sp.resize(params.n_sp_init);
     
+        // Potential bug Will divide by 0 here if only one species
         float gndd_increment = params.range_gndd/((float)params.n_sp_init - 1.0);
         i = 0;
         
@@ -107,7 +109,7 @@ gen_rng(0, (params.n_alleles_init-1))
     std::cout << "| ---------------------------- | \n";
     std::cout << "Steps: " << params.steps << " or ~ " << params.steps * 5 <<
     " years .. " << params.steps / 10 << " generations \n";
-    std::cout << "Area: " << (params.width * 5 * params.height * 5)/10000 << " ha \n";
+    std::cout << "Area: " << (params.width * 10 * params.height * 10)/10000 << " ha \n";
     std::cout << "Individuals: " << params.area << " .. " << params.area/params.n_sp_init << " per species \n";
     
 }
