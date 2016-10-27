@@ -221,6 +221,7 @@ void Neighbors::disperseSeeds(std::mt19937& generator){
         
         // Add seeds from that species and genotype combination
         seeds_by_gen[nn_gen_1d_index[i]] += seeds_to_add; // Add seeds for that specific genotype
+        seeds_by_sp[nn_sp[i]] += seeds_to_add;
         
         i++; // Increment counter
         
@@ -258,10 +259,7 @@ void Neighbors::GNDD(std::vector<float>& gndd_sp){
         seeds_by_gen[nn_gen_1d_index[i]] = std::exp(gndd_sp[nn_sp[i]] *
                                                          std::log(seeds_by_gen[nn_gen_1d_index[i]]));
         
-        // Add to total seeds per species
-        
-        seeds_by_sp[nn_sp[i]] += seeds_by_gen[nn_gen_1d_index[i]];
-        
+       
         
     }
    
@@ -322,7 +320,38 @@ void Neighbors::CNDD(std::vector<float>& cndd_sp){
 } // End function
 
 
+/////////
+// NDD
+// Simultaneous NDD that reduces density based on GNDD and CNDD in one formula
 
+void Neighbors::NDD(std::vector<float>& gndd_sp, std::vector<float>& cndd_sp){
+    
+    // Loop over species by gen counts and reduce densities
+    // total number of iterations will equal number of neighbors
+    
+    for(int i = 0; i < nn_gen_1d_index.size(); i++){
+        
+        // If this is a duplicate - already reduced densities
+        // Skip to avoid double reducing densities
+        if(nn_gen_1d_index_dupe[i]){
+            continue;
+        }
+        
+        // Following equation of Harms et al. 2000
+        // Where ## of recruits is a function of beta exponent and log density of seeds
+        // Here, converting predicted log density of recruits back to actual number of recruits with std::exp
+        // Assume intercept (alpha) = 0
+        // based off this formula in R -- R = (bgi * log(sgi) + bci * log(sci) + log(sgi/sci)) / 2
+        
+        
+        seeds_by_gen[nn_gen_1d_index[i]] = std::exp((gndd_sp[nn_sp[i]] *
+                                                    std::log(seeds_by_gen[nn_gen_1d_index[i]]) +
+                                                    cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
+                                                     std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]])) / 2);
+             
+    }
+    
+}
 
 
 ////

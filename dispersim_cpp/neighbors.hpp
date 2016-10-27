@@ -97,6 +97,9 @@ public:
     // Conspecific NDD
     void CNDD(std::vector<float>& cndd_sp);
     
+    // NDD simulaneous for GNDD and CNDD
+    void NDD(std::vector<float>& gndd_sp, std::vector<float>& cndd_sp);
+    
     // Count total number of seeds
     void totalSeeds();
     

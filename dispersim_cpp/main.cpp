@@ -140,11 +140,17 @@ int main(int argc, const char *argv[]) {
             // Disperse seeds into cell
             neighbors.disperseSeeds(sim.generator);
             
-            // GNDD process
-            neighbors.GNDD(sim.gndd_sp);
+            // Print
+            if(params.verbose) neighbors.printStatus(params);
+            
+            // NDD process 
+            neighbors.NDD(sim.gndd_sp, sim.cndd_sp);
+            
+            // GNDD process - outdated
+            //neighbors.GNDD(sim.gndd_sp);
 
-            // CNDD process
-            neighbors.CNDD(sim.cndd_sp);
+            // CNDD process - outdated
+           // neighbors.CNDD(sim.cndd_sp);
             
             // Print
            if(params.verbose) neighbors.printStatus(params);
