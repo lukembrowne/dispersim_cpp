@@ -209,7 +209,7 @@ int main(int argc, const char *argv[]) {
 
     
     // Write summary overall and summary by sp to file
-    write_summary(summary_over_time, params);
+    write_summary(summary_over_time, params, sim);
 
     
     return 0;

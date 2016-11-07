@@ -47,7 +47,7 @@ float neg_expo_discrete(float alpha, float dij, int R){
 // Write summary stats to file
 // Accepts a vector of summary objects and writes them to file
 
-void write_summary(std::vector<Summary_step>& summary_over_time, Params& params){
+void write_summary(std::vector<Summary_step>& summary_over_time, Params& params, Sim& sim){
     
     // Start file stream
     
@@ -72,7 +72,7 @@ void write_summary(std::vector<Summary_step>& summary_over_time, Params& params)
     // Set column names
     out_summary_overall << "sim_id \t step \t sp_richness \t sp_shannon \t allelic_richness_avg \t allelic_shannon_avg\n";
     
-    out_summary_by_sp << "sim_id \t step \t sp_richness \t sp_shannon \t sp \t abundance \t allelic_richness \t allelic_shannon\n";
+    out_summary_by_sp << "sim_id \t step \t sp_richness \t sp_shannon \t sp \t cndd \t gndd \t abundance \t allelic_richness \t allelic_shannon\n";
 
     
     // Loop through summaries by step
@@ -98,6 +98,8 @@ void write_summary(std::vector<Summary_step>& summary_over_time, Params& params)
             out_summary_by_sp << summary_over_time[i].sp_richness << "\t";
             out_summary_by_sp << summary_over_time[i].sp_shannon << "\t";
             out_summary_by_sp << j << "\t"; // Species ID
+            out_summary_by_sp << sim.cndd_sp[j] << "\t"; // Cndd value
+            out_summary_by_sp << sim.gndd_sp[j] << "\t"; // Gndd value
             out_summary_by_sp << summary_over_time[i].abundance_by_sp[j] << "\t";
             out_summary_by_sp << summary_over_time[i].allelic_richness_by_sp[j] << "\t";
             out_summary_by_sp << summary_over_time[i].allelic_shannon_by_sp[j] << "\t";
