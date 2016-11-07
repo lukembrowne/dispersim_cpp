@@ -71,27 +71,27 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "1000"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "0.10"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "100"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "0.25"
+            argument = "10"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "3"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "5"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "2"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "4"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "2"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -107,19 +107,19 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "0.5"
+            argument = "1"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "0.25"
+            argument = "0"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "100"
+            argument = "300"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "100"
+            argument = "300"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

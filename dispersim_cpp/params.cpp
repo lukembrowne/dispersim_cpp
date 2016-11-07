@@ -42,8 +42,7 @@ Params::Params(const char *argv[]) {
     } else {
         verbose = false;
     }
-    
-    
+
     
     // 3 -  Number of steps
     

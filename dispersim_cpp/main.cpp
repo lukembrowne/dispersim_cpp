@@ -141,7 +141,10 @@ int main(int argc, const char *argv[]) {
             neighbors.disperseSeeds(sim.generator);
             
             // Print
-            if(params.verbose) neighbors.printStatus(params);
+            if(params.verbose){
+                std::cout << "\n\n--------------------------- \n Before NDD \n";
+                neighbors.printStatus(params);
+            }
             
             // NDD process 
             neighbors.NDD(sim.gndd_sp, sim.cndd_sp);
@@ -153,7 +156,11 @@ int main(int argc, const char *argv[]) {
            // neighbors.CNDD(sim.cndd_sp);
             
             // Print
-           if(params.verbose) neighbors.printStatus(params);
+            if(params.verbose){
+                std::cout << "\n\n--------------------------- \n After NDD \n";
+                neighbors.printStatus(params);
+            }
+            
             
             // Count up seeds
             neighbors.totalSeeds();
@@ -172,17 +179,17 @@ int main(int argc, const char *argv[]) {
             summary_over_time.push_back(summary);
             
             
-            // Write landscape of species to tab delimited .txt file
-            std::string species_filename = "./landscape_out/landscape_species_";
-            std::string suffix = ".txt";
-            
-            // Write to buffer to add leading 0s
-            std::stringstream buffer;
-            
-            // Adding sim_id and step number to file name, setw and setfill add leading for sorting
-            buffer << species_filename << "sim_" << std::setw(3) << std::setfill('0') << params.sim_id << "_step_" << std::setw(3) << std::setfill('0') << step << suffix;
-        
-            write_landscape(buffer.str(), sim, params);
+//            // Write landscape of species to tab delimited .txt file
+//            std::string species_filename = "./landscape_out/landscape_species_";
+//            std::string suffix = ".txt";
+//            
+//            // Write to buffer to add leading 0s
+//            std::stringstream buffer;
+//            
+//            // Adding sim_id and step number to file name, setw and setfill add leading for sorting
+//            buffer << species_filename << "sim_" << std::setw(3) << std::setfill('0') << params.sim_id << "_step_" << std::setw(3) << std::setfill('0') << step << suffix;
+//        
+//            write_landscape(buffer.str(), sim, params);
             
         }
                        
