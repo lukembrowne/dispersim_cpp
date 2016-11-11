@@ -65,15 +65,15 @@ gen_rng(0, (params.n_alleles_init-1))
     cndd_sp.resize(params.n_sp_init);
     
         // Will divide by 0 here if only one species
-        float cndd_increment = params.range_cndd/((float)params.n_sp_init - 1.0);
+        double cndd_increment = params.range_cndd/((double)params.n_sp_init - 1.0);
         int i = 0;
     
         // Figure out max and min cndd values
-    float max_cndd = params.mean_cndd + (params.range_cndd/2);
-    float min_cndd = params.mean_cndd - (params.range_cndd/2);
+    double max_cndd = params.mean_cndd + (params.range_cndd/2);
+    double min_cndd = params.mean_cndd - (params.range_cndd/2);
     
     
-    for(float cndd_val = min_cndd; cndd_val <= max_cndd; cndd_val += cndd_increment){
+    for(double cndd_val = min_cndd; cndd_val <= max_cndd; cndd_val += cndd_increment){
         cndd_sp[i] = cndd_val;
         i++;
         if(i == params.n_sp_init) break; // Make sure it doensn't go out of bounds

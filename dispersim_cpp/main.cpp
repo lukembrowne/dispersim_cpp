@@ -153,7 +153,7 @@ int main(int argc, const char *argv[]) {
             //neighbors.GNDD(sim.gndd_sp);
 
             // CNDD process - outdated
-           // neighbors.CNDD(sim.cndd_sp);
+            //  neighbors.CNDD(sim.cndd_sp);
             
             // Print
             if(params.verbose){
