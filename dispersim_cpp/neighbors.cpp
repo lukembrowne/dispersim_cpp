@@ -60,16 +60,28 @@ void Neighbors::initSeedRNG(Params& params){
     
     int i = 0; // For counter
     
+    float distance;
+    
     for(int row = 0; row < (2 * params.neighbor_radius + 1); row++){
         
         for(int col = 0; col < (2 * params.neighbor_radius + 1); col++){
             
             
             if(row == params.neighbor_radius & col == params.neighbor_radius){
+            //    std::cout << "XXXXXX" << "\t";
                 continue; // Skip self
             }
            
-            float distance = sqrt((params.neighbor_radius - row)*(params.neighbor_radius - row) + (params.neighbor_radius - col)*(params.neighbor_radius - col)); // ...
+            
+            // If Global disperal, all individuals in 'neighborhood' (which are actually a sample of adults from the entire landscape), have an equal distance and probability of dispersal
+            if(params.dispersal_mode == 1){
+                
+                distance = 1;
+                
+            } else { // For local dispersal
+                
+                distance = sqrt((params.neighbor_radius - row)*(params.neighbor_radius - row) + (params.neighbor_radius - col)*(params.neighbor_radius - col));
+            }
             
             float disp_prob = neg_expo_discrete(1.0/params.seed_disp_dist,
                                                 distance,
@@ -79,12 +91,12 @@ void Neighbors::initSeedRNG(Params& params){
             
             seed_rng[i] = seed_rng2;
 
-           // std::cout << disp_prob << "\t";
+            std::cout << disp_prob << "\t";
             i++; // Increment count
             
         } // End col loop
         
-       // std::cout << "\n";
+        std::cout << "\n";
     } // End row loop
     
 }

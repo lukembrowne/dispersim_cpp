@@ -73,7 +73,7 @@ gen_rng(0, (params.n_alleles_init-1))
     double min_cndd = params.mean_cndd - (params.range_cndd/2);
     
     
-    for(double cndd_val = min_cndd; cndd_val <= max_cndd; cndd_val += cndd_increment){
+    for(double cndd_val = min_cndd; i <= params.n_sp_init; cndd_val += cndd_increment){
         cndd_sp[i] = cndd_val;
         i++;
         if(i == params.n_sp_init) break; // Make sure it doensn't go out of bounds
@@ -86,16 +86,16 @@ gen_rng(0, (params.n_alleles_init-1))
     gndd_sp.resize(params.n_sp_init);
     
         // Potential bug Will divide by 0 here if only one species
-        float gndd_increment = params.range_gndd/((float)params.n_sp_init - 1.0);
+        double gndd_increment = params.range_gndd/((double)params.n_sp_init - 1.0);
         i = 0;
         
     
     // Figure out max and min cndd values
-    float max_gndd = params.mean_gndd + (params.range_gndd/2);
-    float min_gndd = params.mean_gndd - (params.range_gndd/2);
+    double max_gndd = params.mean_gndd + (params.range_gndd/2);
+    double min_gndd = params.mean_gndd - (params.range_gndd/2);
 
     
-    for(float gndd_val = min_gndd; gndd_val <= max_gndd; gndd_val += gndd_increment){
+    for(double gndd_val = min_gndd; i <= params.n_sp_init; gndd_val += gndd_increment){
         gndd_sp[i] = gndd_val;
         i++;
         if(i == params.n_sp_init) break; // Make sure it doensn't go out of bounds
