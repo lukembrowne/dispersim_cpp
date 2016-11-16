@@ -73,7 +73,7 @@ gen_rng(0, (params.n_alleles_init-1))
     double min_cndd = params.mean_cndd - (params.range_cndd/2);
     
     
-    for(double cndd_val = min_cndd; i <= params.n_sp_init; cndd_val += cndd_increment){
+    for(double cndd_val = max_cndd; i <= params.n_sp_init; cndd_val -= cndd_increment){
         cndd_sp[i] = cndd_val;
         i++;
         if(i == params.n_sp_init) break; // Make sure it doensn't go out of bounds
@@ -95,7 +95,7 @@ gen_rng(0, (params.n_alleles_init-1))
     double min_gndd = params.mean_gndd - (params.range_gndd/2);
 
     
-    for(double gndd_val = min_gndd; i <= params.n_sp_init; gndd_val += gndd_increment){
+    for(double gndd_val = max_gndd; i <= params.n_sp_init; gndd_val -= gndd_increment){
         gndd_sp[i] = gndd_val;
         i++;
         if(i == params.n_sp_init) break; // Make sure it doensn't go out of bounds
