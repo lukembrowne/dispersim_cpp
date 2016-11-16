@@ -158,6 +158,7 @@ int main(int argc, const char *argv[]) {
             // Print
             if(params.verbose){
                 std::cout << "\n\n--------------------------- \n After NDD \n";
+                // Seeds by species is not updated here
                 neighbors.printStatus(params);
             }
             

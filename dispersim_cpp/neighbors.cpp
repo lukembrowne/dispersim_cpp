@@ -76,7 +76,9 @@ void Neighbors::initSeedRNG(Params& params){
             // If Global disperal, all individuals in 'neighborhood' (which are actually a sample of adults from the entire landscape), have an equal distance and probability of dispersal
             if(params.dispersal_mode == 1){
                 
-                distance = 1;
+                distance = 1; //Distance is equal for all NN
+                // Turn average seed dispersal distance to neighborhood radius so kernel is calculating with -1, which would make all probabilities low
+                params.seed_disp_dist = params.neighbor_radius;
                 
             } else { // For local dispersal
                 
@@ -98,6 +100,13 @@ void Neighbors::initSeedRNG(Params& params){
         
         std::cout << "\n";
     } // End row loop
+    
+    
+    // If global dispersal, set seed disp distance back to -1 to differentiate in output
+    if(params.dispersal_mode == 1){
+        params.seed_disp_dist = -1;
+    }
+    
     
 }
 
@@ -368,8 +377,6 @@ void Neighbors::NDD(std::vector<float>& gndd_sp, std::vector<float>& cndd_sp){
         seeds_by_gen[nn_gen_1d_index[i]] = std::exp(cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
                                                      std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]]));
             
-            
-        
         }
     
     }
