@@ -373,9 +373,9 @@ void Neighbors::NDD(std::vector<float>& gndd_sp, std::vector<float>& cndd_sp){
         //                                            cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
         //                                             std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]])) / 2);
             
-        // Standard harms formula, with rounding down to the nearest seed
-            seeds_by_gen[nn_gen_1d_index[i]] = std::floor(std::exp(cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
-                                                     std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]])));
+        // Standard harms formula
+            seeds_by_gen[nn_gen_1d_index[i]] = std::exp(cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
+                                                     std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]]));
             
         } // End else statement
     } // End loop over neighbors

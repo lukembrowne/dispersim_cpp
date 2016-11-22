@@ -190,7 +190,7 @@ int main(int argc, const char *argv[]) {
 //            // Adding sim_id and step number to file name, setw and setfill add leading for sorting
 //            buffer << species_filename << "sim_" << std::setw(3) << std::setfill('0') << params.sim_id << "_step_" << std::setw(3) << std::setfill('0') << step << suffix;
 //        
-//            write_landscape(buffer.str(), sim, params);
+//            write_species_landscape(buffer.str(), sim, params);
             
         }
                        
@@ -206,8 +206,9 @@ int main(int argc, const char *argv[]) {
     // Adding sim_id and step number to file name, setw and setfill add leading for sorting
     buffer << species_filename << "sim_" << std::setw(3) << std::setfill('0') << params.sim_id << suffix;
     
-   write_landscape(buffer.str(), sim, params);
+    write_species_landscape(buffer.str(), sim, params);
 
+    write_genotype_landscape(sim, params);
     
     // Write summary overall and summary by sp to file
     write_summary(summary_over_time, params, sim);

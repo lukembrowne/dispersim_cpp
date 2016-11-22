@@ -120,30 +120,79 @@ void write_summary(std::vector<Summary_step>& summary_over_time, Params& params,
 
 
 
-// Write landscape for both species and genotypes to file
+// Write landscape for species to file
 // Export as tab delimited file
 
-void write_landscape(std::string species_filename, Sim& sim, Params& params){
+void write_species_landscape(std::string species_filename, Sim& sim, Params& params){
     
     std::ofstream out_species(species_filename.c_str());
-   // std::ofstream out_genotypes("landscape_genotypes.txt");
     
     for(int row = 0; row < params.height; row++){
         for(int col = 0; col < params.width; col++){
+            
             out_species << sim.sp[row * params.width + col] << "\t";
-     //       out_genotypes<< gen[i*width + j] << "\t";
 
         } // End column loop
         
         out_species << "\n";
-     //   out_genotypes << "\n";
         
     } // End row loop
     
     out_species.close();
-   // out_genotypes.close();
     
     std::cout << "Successfully wrote " << species_filename << " to file... \n";
+    
+}
+
+
+
+
+// Write landscape for genotypes of a specific species to file
+// Export as tab delimited file
+
+void write_genotype_landscape(Sim& sim, Params& params){
+    
+    // Loop through species
+    for(int species = 0; species < params.n_sp_init; species++){
+    
+        // Write landscape of genotypes of one species to tab delimited .txt file
+        std::string genotype_filename = "./landscape_out/landscape_genotype_";
+        std::string suffix = "_FINAL.txt";
+        
+        // Write to buffer to add leading 0s
+        std::stringstream buffer;
+        
+        // Adding sim_id and step number to file name, setw and setfill add leading for sorting
+        buffer << genotype_filename << "sp_" << std::setw(3) << std::setfill('0') << species << suffix;
+
+        std::ofstream out_genotypes(buffer.str());
+        
+        for(int row = 0; row < params.height; row++){
+            for(int col = 0; col < params.width; col++){
+                
+                   // If not on this species, write out NA
+                if(sim.sp[row * params.width + col] != species){
+                    
+                    out_genotypes << "NA" << "\t";
+                    
+                } else {
+                    
+                   // Only write out genotype for specific species
+                   out_genotypes<< sim.gen[row * params.width + col] << "\t";
+                    
+                }
+                
+            } // End column loop
+            
+            out_genotypes << "\n";
+            
+        } // End row loop
+        
+        out_genotypes.close();
+        
+        std::cout << "Successfully wrote " << buffer.str() << " to file... \n";
+            
+    }
     
 }
 
