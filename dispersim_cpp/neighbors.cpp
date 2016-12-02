@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <cmath>
 #include <boost/random/discrete_distribution.hpp>
+#include <boost/random/binomial_distribution.hpp>
 
 
 // Constructor function - initialize member variables
@@ -20,7 +21,7 @@
 Neighbors::Neighbors(Params& params){
     
     
-    // Calculate number of neighbors based on radius -Minus one to exclude self
+    // Calculate number of neighbors based on radius - Minus one to exclude self
     n_neighbors = (((2 * params.neighbor_radius) + 1) * ((2 * params.neighbor_radius) + 1)) - 1;
     
     // Resize / initialize vectors
@@ -89,9 +90,16 @@ void Neighbors::initSeedRNG(Params& params){
                                                 distance,
                                                 params.neighbor_radius);
             
-            std::binomial_distribution<int> seed_rng2(params.seeds_per_adult, disp_prob);
+           // std::binomial_distribution<int> seed_rng2(params.seeds_per_adult, disp_prob);
             
+            boost::mt19937 gen;
+            
+            boost::binomial_distribution<> seed_rng2(params.seeds_per_adult, disp_prob);
+              
             seed_rng[i] = seed_rng2;
+            
+          //  seed_rng[i] = seed_rng3;
+
 
             std::cout << disp_prob << "\t";
             i++; // Increment count
@@ -231,8 +239,8 @@ void Neighbors::disperseSeeds(std::mt19937& generator){
     // Loop through neighbors
     for(auto& sp_index_iter : nn_sp ){
         
-        seeds_to_add = seed_rng[i](generator);
-
+         seeds_to_add = seed_rng[i](generator);
+      
         //Check to see if this has already been added
         // If it has, mark it as a duplicate to make CNDD and GNDD calculations
         // easier

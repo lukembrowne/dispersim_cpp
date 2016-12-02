@@ -21,6 +21,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include <boost/random/binomial_distribution.hpp>
+
 
 /// MAIN
 
@@ -88,6 +90,7 @@ int main(int argc, const char *argv[]) {
     
     //boost::filesystem::remove_all("./summary_out"); // This would erase the folder
     boost::filesystem::create_directories("./summary_out");
+    
     
  
 ////////////////////////

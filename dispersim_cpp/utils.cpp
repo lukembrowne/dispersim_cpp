@@ -163,7 +163,7 @@ void write_genotype_landscape(Sim& sim, Params& params){
         std::stringstream buffer;
         
         // Adding sim_id and step number to file name, setw and setfill add leading for sorting
-        buffer << genotype_filename << "sp_" << std::setw(3) << std::setfill('0') << species << suffix;
+        buffer << genotype_filename << "sim_" << std::setw(3) << std::setfill('0') << params.sim_id << "_sp_" << std::setw(3) << std::setfill('0') << species << suffix;
 
         std::ofstream out_genotypes(buffer.str());
         

@@ -38,6 +38,7 @@ public:
     // RNGS
     std::random_device device;
     std::mt19937 generator;
+    boost::mt19937 boost_generator;
     std::uniform_int_distribution<int> cell_rng;
     std::uniform_real_distribution<> migration_rng;
     std::uniform_int_distribution<int> species_rng;

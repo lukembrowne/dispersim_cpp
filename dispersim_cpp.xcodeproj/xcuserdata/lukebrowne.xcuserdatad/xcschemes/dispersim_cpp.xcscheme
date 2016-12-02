@@ -63,7 +63,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "100"
+            argument = "1000"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -71,7 +71,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "100"
+            argument = "10000"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -87,7 +87,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "3"
+            argument = "5"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
