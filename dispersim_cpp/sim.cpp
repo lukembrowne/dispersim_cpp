@@ -74,7 +74,13 @@ gen_rng(0, (params.n_alleles_init-1))
     
     
     for(double cndd_val = max_cndd; i <= params.n_sp_init; cndd_val -= cndd_increment){
-        cndd_sp[i] = cndd_val;
+        
+        if(cndd_val >= 1.0){
+            cndd_sp[i] = 1.0;
+        } else {
+            cndd_sp[i] = cndd_val;
+        }
+        
         i++;
         if(i == params.n_sp_init) break; // Make sure it doensn't go out of bounds
     }
@@ -96,7 +102,12 @@ gen_rng(0, (params.n_alleles_init-1))
 
     
     for(double gndd_val = max_gndd; i <= params.n_sp_init; gndd_val -= gndd_increment){
-        gndd_sp[i] = gndd_val;
+        
+        if(gndd_val >= 1.0){
+            gndd_sp[i] = 1.0;
+        } else {
+            gndd_sp[i] = gndd_val;
+        }
         i++;
         if(i == params.n_sp_init) break; // Make sure it doensn't go out of bounds
     }

@@ -211,7 +211,7 @@ int main(int argc, const char *argv[]) {
     
     write_species_landscape(buffer.str(), sim, params);
 
-    write_genotype_landscape(sim, params);
+   // write_genotype_landscape(sim, params);
     
     // Write summary overall and summary by sp to file
     write_summary(summary_over_time, params, sim);
