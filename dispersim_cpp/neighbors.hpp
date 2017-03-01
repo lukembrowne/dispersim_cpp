@@ -17,32 +17,6 @@
 #include <boost/random/binomial_distribution.hpp>
 
 
-// Create a class that holds information about neighbors around an empty cell
-// Holds information on:
-
-// Who the neighbors are in a certain Radius of cells R
-// Species of neighbors
-// Genotypes of neighbors
-// probability of dispersal (neg exponential RNG) for each neighbor
-
-
-//This does bring us to an important topic though: What should you store in a vector? Built-ins like integers can be stored easily, of course. But what about objects of class type? Suppose you are programming a particle system and have a particle class, and want to store a long list of particles, what is the best way to do it? One way is to store a vector<particle>, another is to store a vector<particle*>
-//— that is, don’t store the particles themselves directly in the vector, but store pointers to particles.
-
-//How do you choose which? Generally, the larger and bulkier the object is, the more likely it is you want to store pointers to it, rather than the object itself. Storing a vector<int*> would be very inefficient, since the pointers would be as large or larger than the integers and you’d have to have the overhead of the memory allocations too. But for a large object, like Frogatto’s custom_object class, a vector<custom_object*> is probably what we want. Note that to store an object directly, it must be copyable, i.e. have accessible copy constructors and assignment operators.
-//
-//Note also that if you store a vector of pointers, the vector will not manage the memory pointed to by the pointers. If you want the object’s memory to be managed for you, you could use a vector
-//<boost::shared_ptr<particle> > to have a vector of ‘smart pointers’ that manage the memory they point to.
-
-
-//It means something like this:
-
-//std::vector<Movie *> movies;
-//Then you add to the vector as you read lines:
-//
-//movies.push_back(new Movie(...));
-
-
 
 // Create a neighbors class that is re-used during demographic stage that holds
 // Species ID of neighbors

@@ -137,7 +137,6 @@ int main(int argc, const char *argv[]) {
             neighbors.reset();
             
             // Find neighbors
-            // Distinction b/w Local and Global dispersal happens within this function
             neighbors.updateNeighbors(empty_cell_iter, params, sim);
 
             // Disperse seeds into cell
@@ -152,19 +151,12 @@ int main(int argc, const char *argv[]) {
             // NDD process 
             neighbors.NDD(sim.gndd_sp, sim.cndd_sp);
             
-            // GNDD process - outdated
-            //neighbors.GNDD(sim.gndd_sp);
-
-            // CNDD process - outdated
-            //  neighbors.CNDD(sim.cndd_sp);
-            
             // Print
             if(params.verbose){
                 std::cout << "\n\n--------------------------- \n After NDD \n";
                 // Seeds by species is not updated here
                 neighbors.printStatus(params);
             }
-            
             
             // Count up seeds
             neighbors.totalSeeds();

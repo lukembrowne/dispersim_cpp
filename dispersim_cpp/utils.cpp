@@ -43,7 +43,6 @@ float neg_expo_discrete(float alpha, float dij, int R){
 
 
 
-
 // Write summary stats to file
 // Accepts a vector of summary objects and writes them to file
 
@@ -122,7 +121,6 @@ void write_summary(std::vector<Summary_step>& summary_over_time, Params& params,
 
 // Write landscape for species to file
 // Export as tab delimited file
-
 void write_species_landscape(std::string species_filename, Sim& sim, Params& params){
     
     std::ofstream out_species(species_filename.c_str());
@@ -149,7 +147,6 @@ void write_species_landscape(std::string species_filename, Sim& sim, Params& par
 
 // Write landscape for genotypes of a specific species to file
 // Export as tab delimited file
-
 void write_genotype_landscape(Sim& sim, Params& params){
     
     // Loop through species

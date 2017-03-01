@@ -261,95 +261,6 @@ void Neighbors::disperseSeeds(std::mt19937& generator){
 
 
 /////////
-// GNDD
-// Genotype dependent negative density dependence
-// Reduces densities of seeds in seed_by_gen based on genotype density
-
-void Neighbors::GNDD(std::vector<float>& gndd_sp){
-    
-    // Loop over species by gen counts and reduce densities
-    // total number of iterations will equal number of neighbors
-    
-    for(int i = 0; i < nn_gen_1d_index.size(); i++){
-        
-        // If this is a duplicate - already reduced densities
-        // Skip to avoid double reducing densities
-        if(nn_gen_1d_index_dupe[i]){
-            continue;
-        }
-        
-        // Following equation of Harms et al. 2000
-        // Where ## of recruits is a function of beta exponent and log + 1 density of seeds
-        // Here, converting predicted log +1 density of recruits back to actual number of recruits with std::exp
-        // Adding + 1 to recruit density makes it so theres always at least 2.7 possible recruits
-        // Assume intercept (alpha) = 0
-
-        
-        seeds_by_gen[nn_gen_1d_index[i]] = std::exp(gndd_sp[nn_sp[i]] *
-                                                         std::log(seeds_by_gen[nn_gen_1d_index[i]]));
-        
-       
-        
-    }
-   
-}
-
-
-
-
-
-/////////
-/// CNDD
-// Based on densities of conspecifics
-
-void Neighbors::CNDD(std::vector<float>& cndd_sp){
-    
-    
-    // Loop over species and count how many seeds should die
-    
-    for(int i = 0; i < seeds_by_sp.size(); i++){
-        
-        // Check to make sure seeds don't equal 0
-        // or else will take log of 0 and cause issues
-        
-        if(seeds_by_sp[i] == 0){
-            dead_seeds_sp[i] = 0;
-       
-        } else {
-   
-        dead_seeds_sp[i] = seeds_by_sp[i] -
-                            std::exp(cndd_sp[i] *
-                            std::log(seeds_by_sp[i]));
-        }
-        
-    }
-    
-
-    // Loop over species by gen counts and reduce densities
-    // total number of iterations will equal number of neighbors
-    
-    for(int i = 0; i < nn_gen_1d_index.size(); i++){
-        
-        // If this is a duplicate - already reduced densities
-        // Skip to avoid double reducing densities
-        if(nn_gen_1d_index_dupe[i]){
-            continue;
-        }
-        
-        // Check for 0's or else might divide by 0
-        
-        if(seeds_by_sp[nn_sp[i]] == 0){
-            continue;
-        } else {
-        
-        seeds_by_gen[nn_gen_1d_index[i]] -= seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]] * dead_seeds_sp[nn_sp[i]];
-        }
-
-    }
-} // End function
-
-
-/////////
 // NDD
 // Simultaneous NDD that reduces density based on GNDD and CNDD in one formula
 
@@ -381,9 +292,6 @@ void Neighbors::NDD(std::vector<float>& gndd_sp, std::vector<float>& cndd_sp){
                                                     cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
                                                      std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]])) / 2);
             
-//        // Standard harms formula
-//            seeds_by_gen[nn_gen_1d_index[i]] = std::exp(cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
-//                                                     std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]]));
             
         } // End else statement
     } // End loop over neighbors
