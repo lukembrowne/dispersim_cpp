@@ -9,5 +9,5 @@ bash scripts for cluster/
 data/
 figures/
 r scripts/
-dispersim_cpp.xcodeproj
-dispersim_cpp.xcscheme
+dispersim_cpp.xcodeproj/
+dispersim_cpp.xcscheme/
