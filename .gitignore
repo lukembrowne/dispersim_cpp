@@ -11,3 +11,8 @@ figures/
 r scripts/
 dispersim_cpp.xcodeproj/
 dispersim_cpp.xcscheme/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
