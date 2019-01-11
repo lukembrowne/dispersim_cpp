@@ -4,12 +4,11 @@
 .Ruserdata
 .xcodeproj
 *.Rproj
-*.R
+*.csv
 bash scripts for cluster/
 data/
 figures/
-r scripts/
-dispersim_cpp.xcodeproj/
+dispersim_cpp.xcodeproj/*
 dispersim_cpp.xcscheme/
 *.pbxuser
 *.mode1v3
@@ -17,3 +16,6 @@ dispersim_cpp.xcscheme/
 *.perspectivev3
 *.xcuserstate
 dispersim_cpp.xcodeproj/xcuserdata/
+*dispersim_hoffman*
+*.gif
+boost/*

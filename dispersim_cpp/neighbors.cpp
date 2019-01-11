@@ -262,7 +262,7 @@ void Neighbors::disperseSeeds(std::mt19937& generator){
 
 /////////
 // NDD
-// Simultaneous NDD that reduces density based on GNDD and CNDD in one formula
+// Simultaneous NDD that reduces density based on CNDD
 
 void Neighbors::NDD(std::vector<float>& gndd_sp, std::vector<float>& cndd_sp){
     
@@ -287,10 +287,16 @@ void Neighbors::NDD(std::vector<float>& gndd_sp, std::vector<float>& cndd_sp){
         // Here, converting predicted log density of recruits back to actual number of recruits with std::exp
         // Assume intercept (alpha) = 0
         // based off this formula in R -- R = (bgi * log(sgi) + bci * log(sci) + log(sgi/sci)) / 2
-        seeds_by_gen[nn_gen_1d_index[i]] = std::exp((gndd_sp[nn_sp[i]] *
-                                                    std::log(seeds_by_gen[nn_gen_1d_index[i]]) +
-                                                    cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
-                                                     std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]])) / 2);
+//        seeds_by_gen[nn_gen_1d_index[i]] = std::exp((gndd_sp[nn_sp[i]] *
+//                                                    std::log(seeds_by_gen[nn_gen_1d_index[i]]) +
+//                                                    cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
+//                                                     std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]])) / 2);
+            
+            
+       // Standard harms formula
+           seeds_by_gen[nn_gen_1d_index[i]] = std::exp(cndd_sp[nn_sp[i]] * std::log(seeds_by_sp[nn_sp[i]]) +
+                                                    std::log(seeds_by_gen[nn_gen_1d_index[i]]/seeds_by_sp[nn_sp[i]]));
+            
             
             
         } // End else statement
