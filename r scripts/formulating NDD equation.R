@@ -36,8 +36,8 @@ harms <- function(bgi, bci, sgi, sci, verbose = FALSE){
 
  loss <- (sgi - exp(R))/sgi
  
-  return(R)
-# return(loss)
+ # return(R)
+ return(loss)
  
 }
 
@@ -45,22 +45,15 @@ harms <- function(bgi, bci, sgi, sci, verbose = FALSE){
 #genotypes <- as.numeric(table(sample.int(20, size = 500, replace = TRUE)))
 genotypes <- 0:1000
 
-harms(bgi = 1, bci = 0.8,
-      sgi = 1:20, sci = sum(genotypes), verbose = TRUE)
-
-harms(bgi = .8, bci = 1,
-      sgi = 1:20, sci = sum(genotypes), verbose = TRUE)
-
-harms(bgi = .95, bci = .95,
-      sgi = 1:20, sci = sum(genotypes), verbose = TRUE)
-
+harms(bgi = 1, bci = .8,
+      sgi = 1:10, sci = sum(genotypes), verbose = TRUE)
 
 
 ## Checking percent loss of seeds based on gndd and cndd values
 loss_test <- data.frame(mean_cndd = NA, mean_gndd = NA, percent_loss = NA)
 row = 1
-for(i in seq(.1, .9, length.out = 10)){
-for(j in seq(.1, .9, length. = 10)){
+for(i in seq(-.2, .9, length.out = 100)){
+for(j in 1){
   # Log sequence
   #for(i in exp(seq(log(0.001), log(1), length.out = 20))){
     #for(j in exp(seq(log(0.001), log(1), length.out = 20))){
@@ -76,13 +69,9 @@ for(j in seq(.1, .9, length. = 10)){
   }
 }
 
-## Species diversity 
-loss_test %>%
-  ggplot(aes(x = mean_gndd, y = mean_cndd, fill = percent_loss)) +
-  geom_tile() + theme_bw()  + scale_fill_distiller(palette = "Spectral", 
-                                                   limits = c(0, 1)) + 
-  geom_text(aes(x = mean_gndd, y = mean_cndd, 
-                label = sprintf("%.3f", round(percent_loss, 3))))
+# Plots of percent loss 
+ggplot(loss_test, aes(x = mean_cndd, y = percent_loss)) +
+  geom_line() + geom_point() + theme_bw(15)
 
 
 

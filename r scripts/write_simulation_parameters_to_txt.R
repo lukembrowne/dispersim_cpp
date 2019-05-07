@@ -2,14 +2,12 @@
 ### Writing simulation parameters to tab delimited text file so that a BASH 
 ## script can read this file and set up jobs on cluster
 
-setwd("~/Dropbox/dispersim_cpp/r scripts")
-
-reps = 20 ## How many reps per parameter set? 
+reps = 10 ## How many reps per parameter set? 
 
 ### Grid of NDD values
 # This one is important! Sets mean CNDD across simulations
-ndd_df = expand.grid( mean_cndd = c(seq(.05, .85, length.out = 9), 1), # Go up to 1 for neutral dynamics
-                     mean_gndd = c(seq(.05, .85, length.out = 9), 1),
+ndd_df = expand.grid(mean_cndd = c(seq(-.2, .9, length.out = 9), 1), # Go up to 1 for neutral dynamics
+                     mean_gndd = c(1),
                      seed_disp_dist = c(5)) 
                     # dispersal_mode = c(0, 1)) # Adding in global dispersal
 
@@ -34,7 +32,7 @@ out <- data.frame(
   save_every_n_steps = 2000,
   
 ## 2 - Whether printing is verbose or not
-  verbose = 0,
+  verbose = 1,
 
 ## 3 -  Number of steps
 ## Each step = 5-10 years with 0.10 % mortality rate
@@ -61,7 +59,7 @@ out <- data.frame(
 
 ## 9 - Seeds per adult
 ## Equal to fecundity..
-  seeds_per_adult = 5000,
+  seeds_per_adult = 10000,
 
 ## 10, 11 - CNDD parameters
 ## Values closer to 1 = weaker NDD
@@ -126,16 +124,12 @@ cat("Total simulations:", nrow(out), "\n")
 cat("Expected number of hours:", nrow(out)/96*1.25, "\n")
 
 
-
-plot(jitter(out$mean_cndd), jitter(out$mean_gndd))
-
-
 ### Arrow plot of GNDD and CNDD values
 unique_cndd <- unique(out$mean_cndd)
 
 
 plot(sort(unique_cndd), 1:length(unique_cndd), 
-     xlim = c(-.1, 1.1),
+     xlim = c(-.25, 1.1),
      pch = 19, xlab = "Strength of NDD", bty = "l",
       ylab = "Community ID", yaxt = "n", ylim = c(0, 10))
 axis(side = 2, at = 1:10, labels = as.character(1:10), las = 1)
@@ -145,23 +139,8 @@ arrows(x0 = sort(unique_cndd) - out$range_cndd[1]/2,
        code = 3, angle = 90, length = 0.1)
 
 
-
-
-
-
-## Example of what matrix plot would look like
-out %>%
-  # filter(mean_cndd != 1) %>% # Filter out neutral models
-  group_by(mean_cndd, mean_gndd) %>%
-  summarise_all(mean) %>%
-  ggplot(aes(x = mean_gndd, y = mean_cndd, fill = mean_gndd)) +
-  geom_tile() + theme_bw()  + scale_fill_distiller(palette = "Spectral") + 
-  geom_text(aes(x = mean_gndd, y = mean_cndd, label = round(mean_gndd,1)))
-
-
-
 ## Write to file
-#write.csv(out, file = "run_030.csv", row.names = FALSE)
+write.csv(out, file = "./parameter files/run_033.csv", row.names = FALSE)
 
 
 
