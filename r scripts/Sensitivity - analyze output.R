@@ -1,29 +1,94 @@
 ## Setwd, load libraries, and load functions
-setwd("~/Dropbox/dispersim_cpp")
+  library(tidyverse)
+  library(RColorBrewer) #to use brewer.pal
+  library(fields) #to use designer.colors
+  library(viridis)
+  library(randomForest)
+  library(forestFloor)
+  
 
-library(tidyverse)
-library(RColorBrewer) #to use brewer.pal
-library(fields) #to use designer.colors
-library(viridis)
-library(gridExtra)
 
-source("./r scripts/functions.R")
+# Read in simulation output -----------------------------------------------
+
 
 ## Set run name
-run_name <- "run_031"
+run_name <- "run_036"
+run_name <- "run_lhs_001"
 
-## Load in data
-dat_sp_sens = read_summary_out(path_to_folder = 
-                            paste("./data/", run_name,"/summary_out/", sep = ""),
-                          type = "by_sp")
-dat_sp_sens
+path_to_summaries_by_sp <- grep(pattern = "by_sp",
+                                x = list.files(paste0("./data/", 
+                                                      run_name, "/summary_out"),
+                                               full.names = TRUE),
+                                value = TRUE)
+
+dat_sp_raw <- plyr::ldply(path_to_summaries_by_sp, read_tsv)
+
+dat_sp_raw
+
 
 ## Merge with parameter values
-params <- read_csv(paste("./data/", run_name, "/", run_name, ".csv", sep = ""))
+  params <- read_csv(paste("./data/", run_name, "/", run_name, ".csv", sep = ""))
+  
+  dat_sp_raw <- left_join(dat_sp_raw, params, by = "sim_id")
+  
+  glimpse(dat_sp_raw)
+  
+  
+## Subset down to last timestep of each simulation  
+  dat_sp <- dat_sp_raw %>%
+    group_by(sim_id) %>%
+    filter(step == max(step))
+  
+  table(dat_sp$sim_id)
 
-dat_sp_sens <- left_join(dat_sp_sens, params, by = "sim_id")
+  
 
-glimpse(dat_sp_sens)
+
+## Random forest on just diversity metrics
+  
+  
+rf_sp <- randomForest(allelic_shannon ~ step + abundance + n_sp_init +
+                        n_alleles_init + seed_disp_dist + neighbor_radius +
+                        seeds_per_adult + mean_cndd + range_cndd + width + migration_rate,
+                      data = dat_sp,
+                      importance = TRUE,
+                      keep.inbag = T)  
+
+rf_sp
+
+varImpPlot(rf_sp)
+
+# for(var in rownames(importance(rf_sp)[order(importance(rf_sp)[, 1], decreasing = T), ])){
+#   # partialPlot(rf_sp, pred.data = as.data.frame(dat_sp), 
+#   #             x.var = var, lwd = 2)
+#   
+#   print(var %in% colnames(dat_sp))
+# }
+#   
+
+
+#compute forestFloor object, often only 5-10% time of growing forest
+ff = forestFloor(
+  rf.fit = rf_sp, # mandatory
+  X = dat_sp, # mandatory
+  calc_np = FALSE, # TRUE or FALSE both works, makes no difference
+  binary_reg = FALSE # takes no effect here when rfo$type="regression"
+)
+
+plot(ff, las = 1, pch = ".")
+
+plot(ff, limitY = FALSE, las = 1) # Have each panel have it's own x axis
+
+
+
+
+
+
+
+
+# Old code ----------------------------------------------------------------
+
+
 
 ## Rank species by abundance
 ## If abundance is a tie, will continute sequential counts of ranks

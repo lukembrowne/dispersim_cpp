@@ -2,14 +2,15 @@
 ### Writing simulation parameters to tab delimited text file so that a BASH 
 ## script can read this file and set up jobs on cluster
 
-reps = 10 ## How many reps per parameter set? 
+reps = 2 ## How many reps per parameter set? 
 
 ### Grid of NDD values
 # This one is important! Sets mean CNDD across simulations
-ndd_df = expand.grid(mean_cndd = c(seq(-.2, .9, length.out = 9), 1), # Go up to 1 for neutral dynamics
+ndd_df = expand.grid(#mean_cndd = c(seq(-.2, .9, length.out = 20), 1), # Go up to 1 for neutral dynamics
+                    mean_cndd = c(seq(-.2, .89, length.out = 40), 1),
                      mean_gndd = c(1),
-                     seed_disp_dist = c(5)) 
-                    # dispersal_mode = c(0, 1)) # Adding in global dispersal
+                     seed_disp_dist = c(5, 10, 20),
+                     dispersal_mode = c(0, 1)) # Adding in global dispersal
 
 # Remove simulations with varying dispersal distance from global dispersal
 # Would need to adjust threshold for seed dispersal distance if that changes
@@ -31,8 +32,8 @@ out <- data.frame(
   ###1 - How often to save out data save_every_n_steps
   save_every_n_steps = 2000,
   
-## 2 - Whether printing is verbose or not
-  verbose = 1,
+## 2 - Whether printing is verbose or not - do not run verbose on cluster
+  verbose = 0,
 
 ## 3 -  Number of steps
 ## Each step = 5-10 years with 0.10 % mortality rate
@@ -79,10 +80,10 @@ out <- data.frame(
 
 ## 16 - Migration rate
 ## Immigrant per recruit (~1 in 10,000) is from BCI paper; 1 in 9000 used in Muller Landau 2007
-  migration_rate = 0.001,
+  migration_rate = 0.0001,
 
 ## 17 - Dispersal mode, 1 == global; 0 == local
-  dispersal_mode = 0
+  dispersal_mode = ndd_df$dispersal_mode
 
 ) # End data frame
 
@@ -131,16 +132,17 @@ unique_cndd <- unique(out$mean_cndd)
 plot(sort(unique_cndd), 1:length(unique_cndd), 
      xlim = c(-.25, 1.1),
      pch = 19, xlab = "Strength of NDD", bty = "l",
-      ylab = "Community ID", yaxt = "n", ylim = c(0, 10))
+      ylab = "Community ID", yaxt = "n")
 axis(side = 2, at = 1:10, labels = as.character(1:10), las = 1)
 arrows(x0 = sort(unique_cndd) - out$range_cndd[1]/2,
        x1 = sort(unique_cndd) + out$range_cndd[1]/2,
        y0 = 1:length(unique_cndd),
        code = 3, angle = 90, length = 0.1)
+abline(v = 1)
 
 
 ## Write to file
-write.csv(out, file = "./parameter files/run_033.csv", row.names = FALSE)
+#write.csv(out, file = "./parameter files/run_036.csv", row.names = FALSE)
 
 
 

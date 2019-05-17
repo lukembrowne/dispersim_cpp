@@ -1,7 +1,5 @@
 
 ## Setwd, load libraries, and load functions
-setwd("~/Dropbox/dispersim_cpp")
-
 library(tidyverse)
 library(RColorBrewer) #to use brewer.pal
 library(fields) #to use designer.colors
@@ -10,7 +8,7 @@ library(viridis)
 source("./r scripts/functions.R")
 
 ## Set run name
-run_name <- "run_025"
+run_name <- "run_033"
 
 ## Load in data
 dat_sp = read_summary_out(path_to_folder = 
